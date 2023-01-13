@@ -1,11 +1,13 @@
 <template>
   <div class="container">
     <MyHeader />
+    <TracksInput />
   </div>
 </template>
 
 <script setup lang="ts">
   import MyHeader from '@/MyHeader';
+  import TracksInput from '@/TracksInput';
  
 </script>
 

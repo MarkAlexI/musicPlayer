@@ -17593,13 +17593,15 @@ exports["default"] = (0, vue_1.defineComponent)({
         expose();
         const currTime = (0, vue_2.ref)(0);
         const duration = (0, vue_2.ref)(0);
+        const isPlaying = (0, vue_2.ref)(false);
         const file = (0, vue_2.ref)();
+        const fileSelect = (0, vue_2.ref)();
         const player = new Audio();
         player.addEventListener('timeupdate', () => {
             currTime.value = Math.round(player.currentTime);
         });
-        const pause = () => !!player.src && player.pause();
-        const play = () => !!player.src && player.play();
+        const pause = () => !!player.src && (isPlaying.value = !isPlaying.value, player.pause());
+        const play = () => !!player.src && (isPlaying.value = !isPlaying.value, player.play());
         const handleFileUpload = ($event) => __awaiter(this, void 0, void 0, function* () {
             const target = $event.target;
             if (target && target.files) {
@@ -17611,6 +17613,7 @@ exports["default"] = (0, vue_1.defineComponent)({
                 player.src = URL.createObjectURL(file.value);
                 try {
                     yield player.play();
+                    isPlaying.value = true;
                     duration.value = Math.ceil(player.duration) || 0;
                 }
                 catch (error) {
@@ -17619,7 +17622,7 @@ exports["default"] = (0, vue_1.defineComponent)({
                 URL.revokeObjectURL(player.src);
             }
         });
-        const __returned__ = { currTime, duration, file, player, pause, play, handleFileUpload };
+        const __returned__ = { currTime, duration, isPlaying, file, fileSelect, player, pause, play, handleFileUpload };
         Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true });
         return __returned__;
     }
@@ -17661,6 +17664,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.render = void 0;
 const vue_1 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 const _hoisted_1 = { class: "main" };
+const _hoisted_2 = (0, vue_1.createElementVNode)("hr", null, null, -1);
 function render(_ctx, _cache, $props, $setup, $data, $options) {
     return ((0, vue_1.openBlock)(), (0, vue_1.createElementBlock)("div", _hoisted_1, [
         (0, vue_1.createElementVNode)("p", null, (0, vue_1.toDisplayString)($setup.currTime + ' \/ ' + $setup.duration), 1),
@@ -17669,10 +17673,21 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
             onChange: _cache[0] || (_cache[0] = ($event) => ($setup.handleFileUpload($event))),
             type: "file",
             multiple: "",
-            accept: "audio/*"
+            accept: "audio/*",
+            style: { "display": "none" }
         }, null, 544),
-        (0, vue_1.createElementVNode)("button", { onClick: $setup.pause }, "Pause"),
-        (0, vue_1.createElementVNode)("button", { onClick: $setup.play }, "Play")
+        (0, vue_1.createElementVNode)("button", {
+            ref: "fileSelect",
+            type: "button",
+            onClick: _cache[1] || (_cache[1] = ($event) => ($setup.file.click()))
+        }, "Select some files", 512),
+        _hoisted_2,
+        (0, vue_1.withDirectives)((0, vue_1.createElementVNode)("button", { onClick: $setup.pause }, "Pause", 512), [
+            [vue_1.vShow, $setup.isPlaying]
+        ]),
+        (0, vue_1.withDirectives)((0, vue_1.createElementVNode)("button", { onClick: $setup.play }, "Play", 512), [
+            [vue_1.vShow, !$setup.isPlaying]
+        ])
     ]));
 }
 exports.render = render;

@@ -17591,38 +17591,53 @@ exports["default"] = (0, vue_1.defineComponent)({
     __name: 'TracksInput',
     setup(__props, { expose }) {
         expose();
-        const currTime = (0, vue_2.ref)(0);
-        const duration = (0, vue_2.ref)(0);
-        const isPlaying = (0, vue_2.ref)(false);
-        const file = (0, vue_2.ref)();
+        const input = (0, vue_2.ref)();
+        const files = (0, vue_2.ref)();
         const fileSelect = (0, vue_2.ref)();
         const player = new Audio();
+        const currTime = (0, vue_2.ref)(0);
+        const duration = (0, vue_2.ref)(0);
+        const currTrack = (0, vue_2.ref)(0);
+        const isPlaying = (0, vue_2.ref)(false);
         player.addEventListener('timeupdate', () => {
             currTime.value = Math.round(player.currentTime);
+            if (player.currentTime === player.duration) {
+                currTrack.value = !!files.value[currTrack.value + 1] ?
+                    currTrack.value + 1 :
+                    0;
+                playNewTrack(currTrack.value);
+            }
         });
         const pause = () => !!player.src && (isPlaying.value = !isPlaying.value, player.pause());
         const play = () => !!player.src && (isPlaying.value = !isPlaying.value, player.play());
+        const playNewTrack = (index) => __awaiter(this, void 0, void 0, function* () {
+            if (!!!files.value[index])
+                return;
+            if (!!player.src) {
+                player.pause();
+                player.src = '';
+                isPlaying.value = false;
+            }
+            player.src = URL.createObjectURL(files.value[index]);
+            try {
+                yield player.play();
+                isPlaying.value = true;
+                duration.value = Math.round(player.duration) || 0;
+            }
+            catch (error) {
+                console.log('Failed to play, error: ' + error);
+            }
+            URL.revokeObjectURL(player.src);
+        });
         const handleFileUpload = ($event) => __awaiter(this, void 0, void 0, function* () {
             const target = $event.target;
             if (target && target.files) {
-                file.value = target.files[0];
-                if (!!player.src) {
-                    player.pause();
-                    player.src = '';
-                }
-                player.src = URL.createObjectURL(file.value);
-                try {
-                    yield player.play();
-                    isPlaying.value = true;
-                    duration.value = Math.ceil(player.duration) || 0;
-                }
-                catch (error) {
-                    console.log('Failed to play, error: ' + error);
-                }
-                URL.revokeObjectURL(player.src);
+                files.value = target.files;
+                currTrack.value = 0;
+                playNewTrack(currTrack.value);
             }
         });
-        const __returned__ = { currTime, duration, isPlaying, file, fileSelect, player, pause, play, handleFileUpload };
+        const __returned__ = { input, files, fileSelect, player, currTime, duration, currTrack, isPlaying, pause, play, playNewTrack, handleFileUpload };
         Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true });
         return __returned__;
     }
@@ -17669,7 +17684,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     return ((0, vue_1.openBlock)(), (0, vue_1.createElementBlock)("div", _hoisted_1, [
         (0, vue_1.createElementVNode)("p", null, (0, vue_1.toDisplayString)($setup.currTime + ' \/ ' + $setup.duration), 1),
         (0, vue_1.createElementVNode)("input", {
-            ref: "file",
+            ref: "input",
             onChange: _cache[0] || (_cache[0] = ($event) => ($setup.handleFileUpload($event))),
             type: "file",
             multiple: "",
@@ -17679,7 +17694,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         (0, vue_1.createElementVNode)("button", {
             ref: "fileSelect",
             type: "button",
-            onClick: _cache[1] || (_cache[1] = ($event) => ($setup.file.click()))
+            onClick: _cache[1] || (_cache[1] = ($event) => ($setup.input.click()))
         }, "Select some files", 512),
         _hoisted_2,
         (0, vue_1.withDirectives)((0, vue_1.createElementVNode)("button", { onClick: $setup.pause }, "Pause", 512), [

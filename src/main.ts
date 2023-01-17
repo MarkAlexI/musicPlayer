@@ -5,17 +5,20 @@ import { createStore } from 'vuex';
 const store = createStore({
   state() {
     return {
-      string: ''
+      trackList: []
     }
   },
   mutations: {
-    refresh(state, value) {
-      state.string = value
+    refreshTrackList(state, newValue) {
+      state.trackList = newValue;
     }
   },
   getters: {
-    stringLength(state) {
-      return store.state.string.length
+    trackListLength(state) {
+      return store.state.trackList.length;
+    },
+    track: (state) => (index) => {
+      return store.state.trackList[index];
     }
   }
 })

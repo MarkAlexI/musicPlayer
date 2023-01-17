@@ -21,9 +21,20 @@
 
 <script setup lang="ts">
   import { ref } from 'vue';
+  import { useStore } from 'vuex';
+  
+  const store = useStore();
+  
+  const updateStore = (newTracks: Tracks) => {
+    store.commit('refreshTrackList', newTracks);
+    console.log(store.getters.trackListLength);
+  };
+  
+  const getTrack = (index) => {
+    return store.getters.track(index);
+  };
   
   const input = ref<HTMLInputElement | null>();
-  const files = ref <FileList | null>();
   const fileSelect = ref<HTMLButtonElement | null>();
   const player = new Audio();
   
@@ -35,7 +46,8 @@
   player.addEventListener('timeupdate', () => {
     currTime.value = Math.round(player.currentTime);
     if (player.currentTime === player.duration) {
-      currTrack.value = !!files.value[currTrack.value + 1] ?
+      const track = getTrack(currTrack.value + 1);
+      currTrack.value = !!track ?
         currTrack.value + 1 :
         0;
       playNewTrack(currTrack.value);
@@ -46,14 +58,15 @@
   const play = () => !!player.src && (isPlaying.value = !isPlaying.value, player.play());
   
   const playNewTrack = async (index: number) => {
-    if (!!!files.value[index]) return;
+    const track = getTrack(index);
+    if (!!!track) return;
     if (!!player.src) {
       player.pause();
       player.src = '';
       isPlaying.value = false;
     }
   
-    player.src = URL.createObjectURL(files.value[index]);
+    player.src = URL.createObjectURL(track);
     try {
       await player.play();
       isPlaying.value = true;
@@ -65,12 +78,17 @@
     URL.revokeObjectURL(player.src);
   };
   
+  store.subscribe((mutation, state) => {
+    if (mutation.type === 'refreshTrackList') {
+      currTrack.value = 0;
+      playNewTrack(currTrack.value);
+    }
+  });
+  
   const handleFileUpload = async ($event: Event) => {
     const target = $event.target as HTMLInputElement;
     if (target && target.files) {
-      files.value = target.files;
-      currTrack.value = 0;
-      playNewTrack(currTrack.value);
+      updateStore(target.files);
     }
   }
   

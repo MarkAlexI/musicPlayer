@@ -17820,35 +17820,6 @@ exports["default"] = (0, vue_1.defineComponent)({
 
 /***/ }),
 
-/***/ "./node_modules/ts-loader/index.js??clonedRuleSet-1!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./src/components/MyHeader.vue?vue&type=script&setup=true&lang=ts":
-/*!***********************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/ts-loader/index.js??clonedRuleSet-1!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./src/components/MyHeader.vue?vue&type=script&setup=true&lang=ts ***!
-  \***********************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const vue_1 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
-const vuex_1 = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm-bundler.js");
-exports["default"] = (0, vue_1.defineComponent)({
-    __name: 'MyHeader',
-    setup(__props, { expose }) {
-        expose();
-        const store = (0, vuex_1.useStore)();
-        const updateStore = () => {
-            store.commit('refresh', "@#$");
-            console.log(store.state.string);
-            console.log(store.getters.stringLength);
-        };
-        const __returned__ = { store, updateStore };
-        Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true });
-        return __returned__;
-    }
-});
-
-
-/***/ }),
-
 /***/ "./node_modules/ts-loader/index.js??clonedRuleSet-1!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./src/components/TracksInput.vue?vue&type=script&setup=true&lang=ts":
 /*!**************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/ts-loader/index.js??clonedRuleSet-1!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./src/components/TracksInput.vue?vue&type=script&setup=true&lang=ts ***!
@@ -17868,12 +17839,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const vue_1 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 const vue_2 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+const vuex_1 = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm-bundler.js");
 exports["default"] = (0, vue_1.defineComponent)({
     __name: 'TracksInput',
     setup(__props, { expose }) {
         expose();
+        const store = (0, vuex_1.useStore)();
+        const updateStore = (newTracks) => {
+            store.commit('refreshTrackList', newTracks);
+            console.log(store.getters.trackListLength);
+        };
+        const getTrack = (index) => {
+            return store.getters.track(index);
+        };
         const input = (0, vue_2.ref)();
-        const files = (0, vue_2.ref)();
         const fileSelect = (0, vue_2.ref)();
         const player = new Audio();
         const currTime = (0, vue_2.ref)(0);
@@ -17883,7 +17862,8 @@ exports["default"] = (0, vue_1.defineComponent)({
         player.addEventListener('timeupdate', () => {
             currTime.value = Math.round(player.currentTime);
             if (player.currentTime === player.duration) {
-                currTrack.value = !!files.value[currTrack.value + 1] ?
+                const track = getTrack(currTrack.value + 1);
+                currTrack.value = !!track ?
                     currTrack.value + 1 :
                     0;
                 playNewTrack(currTrack.value);
@@ -17892,14 +17872,15 @@ exports["default"] = (0, vue_1.defineComponent)({
         const pause = () => !!player.src && (isPlaying.value = !isPlaying.value, player.pause());
         const play = () => !!player.src && (isPlaying.value = !isPlaying.value, player.play());
         const playNewTrack = (index) => __awaiter(this, void 0, void 0, function* () {
-            if (!!!files.value[index])
+            const track = getTrack(index);
+            if (!!!track)
                 return;
             if (!!player.src) {
                 player.pause();
                 player.src = '';
                 isPlaying.value = false;
             }
-            player.src = URL.createObjectURL(files.value[index]);
+            player.src = URL.createObjectURL(track);
             try {
                 yield player.play();
                 isPlaying.value = true;
@@ -17910,15 +17891,19 @@ exports["default"] = (0, vue_1.defineComponent)({
             }
             URL.revokeObjectURL(player.src);
         });
-        const handleFileUpload = ($event) => __awaiter(this, void 0, void 0, function* () {
-            const target = $event.target;
-            if (target && target.files) {
-                files.value = target.files;
+        store.subscribe((mutation, state) => {
+            if (mutation.type === 'refreshTrackList') {
                 currTrack.value = 0;
                 playNewTrack(currTrack.value);
             }
         });
-        const __returned__ = { input, files, fileSelect, player, currTime, duration, currTrack, isPlaying, pause, play, playNewTrack, handleFileUpload };
+        const handleFileUpload = ($event) => __awaiter(this, void 0, void 0, function* () {
+            const target = $event.target;
+            if (target && target.files) {
+                updateStore(target.files);
+            }
+        });
+        const __returned__ = { store, updateStore, getTrack, input, fileSelect, player, currTime, duration, currTrack, isPlaying, pause, play, playNewTrack, handleFileUpload };
         Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true });
         return __returned__;
     }
@@ -17943,28 +17928,6 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         (0, vue_1.createVNode)($setup["MyHeader"]),
         (0, vue_1.createVNode)($setup["TracksInput"])
     ]));
-}
-exports.render = render;
-
-
-/***/ }),
-
-/***/ "./node_modules/ts-loader/index.js??clonedRuleSet-1!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./src/components/MyHeader.vue?vue&type=template&id=898691ee&ts=true":
-/*!************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/ts-loader/index.js??clonedRuleSet-1!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./src/components/MyHeader.vue?vue&type=template&id=898691ee&ts=true ***!
-  \************************************************************************************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.render = void 0;
-const vue_1 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
-const _hoisted_1 = (0, vue_1.createElementVNode)("h1", null, "Choose tracks.", -1);
-function render(_ctx, _cache, $props, $setup, $data, $options) {
-    return ((0, vue_1.openBlock)(), (0, vue_1.createElementBlock)(vue_1.Fragment, null, [
-        _hoisted_1,
-        (0, vue_1.createElementVNode)("button", { onClick: $setup.updateStore }, "Press")
-    ], 64));
 }
 exports.render = render;
 
@@ -18073,21 +18036,18 @@ if (false) {}
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "__esModule": () => (/* reexport safe */ _MyHeader_vue_vue_type_script_setup_true_lang_ts__WEBPACK_IMPORTED_MODULE_1__.__esModule),
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _MyHeader_vue_vue_type_template_id_898691ee_ts_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MyHeader.vue?vue&type=template&id=898691ee&ts=true */ "./src/components/MyHeader.vue?vue&type=template&id=898691ee&ts=true");
-/* harmony import */ var _MyHeader_vue_vue_type_script_setup_true_lang_ts__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MyHeader.vue?vue&type=script&setup=true&lang=ts */ "./src/components/MyHeader.vue?vue&type=script&setup=true&lang=ts");
-/* harmony import */ var _MyHeader_vue_vue_type_style_index_0_id_898691ee_lang_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MyHeader.vue?vue&type=style&index=0&id=898691ee&lang=css */ "./src/components/MyHeader.vue?vue&type=style&index=0&id=898691ee&lang=css");
-/* harmony import */ var _storage_emulated_0_Android_data_io_spck_editor_node_files_musicPlayer_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
+/* harmony import */ var _MyHeader_vue_vue_type_template_id_898691ee__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MyHeader.vue?vue&type=template&id=898691ee */ "./src/components/MyHeader.vue?vue&type=template&id=898691ee");
+/* harmony import */ var _MyHeader_vue_vue_type_style_index_0_id_898691ee_lang_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MyHeader.vue?vue&type=style&index=0&id=898691ee&lang=css */ "./src/components/MyHeader.vue?vue&type=style&index=0&id=898691ee&lang=css");
+/* harmony import */ var _storage_emulated_0_Android_data_io_spck_editor_node_files_musicPlayer_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
 
-
-
+const script = {}
 
 ;
 
 
-const __exports__ = /*#__PURE__*/(0,_storage_emulated_0_Android_data_io_spck_editor_node_files_musicPlayer_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__["default"])(_MyHeader_vue_vue_type_script_setup_true_lang_ts__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_MyHeader_vue_vue_type_template_id_898691ee_ts_true__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"src/components/MyHeader.vue"]])
+const __exports__ = /*#__PURE__*/(0,_storage_emulated_0_Android_data_io_spck_editor_node_files_musicPlayer_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__["default"])(script, [['render',_MyHeader_vue_vue_type_template_id_898691ee__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"src/components/MyHeader.vue"]])
 /* hot reload */
 if (false) {}
 
@@ -18166,22 +18126,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/components/MyHeader.vue?vue&type=script&setup=true&lang=ts":
-/*!************************************************************************!*\
-  !*** ./src/components/MyHeader.vue?vue&type=script&setup=true&lang=ts ***!
-  \************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "__esModule": () => (/* reexport safe */ _node_modules_ts_loader_index_js_clonedRuleSet_1_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_7_use_0_MyHeader_vue_vue_type_script_setup_true_lang_ts__WEBPACK_IMPORTED_MODULE_0__.__esModule),
-/* harmony export */   "default": () => (/* reexport safe */ _node_modules_ts_loader_index_js_clonedRuleSet_1_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_7_use_0_MyHeader_vue_vue_type_script_setup_true_lang_ts__WEBPACK_IMPORTED_MODULE_0__["default"])
-/* harmony export */ });
-/* harmony import */ var _node_modules_ts_loader_index_js_clonedRuleSet_1_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_7_use_0_MyHeader_vue_vue_type_script_setup_true_lang_ts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/ts-loader/index.js??clonedRuleSet-1!../../node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./MyHeader.vue?vue&type=script&setup=true&lang=ts */ "./node_modules/ts-loader/index.js??clonedRuleSet-1!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./src/components/MyHeader.vue?vue&type=script&setup=true&lang=ts");
- 
-
-/***/ }),
-
 /***/ "./src/components/TracksInput.vue?vue&type=script&setup=true&lang=ts":
 /*!***************************************************************************!*\
   !*** ./src/components/TracksInput.vue?vue&type=script&setup=true&lang=ts ***!
@@ -18217,22 +18161,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/components/MyHeader.vue?vue&type=template&id=898691ee&ts=true":
-/*!***************************************************************************!*\
-  !*** ./src/components/MyHeader.vue?vue&type=template&id=898691ee&ts=true ***!
-  \***************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "__esModule": () => (/* reexport safe */ _node_modules_ts_loader_index_js_clonedRuleSet_1_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_7_use_0_MyHeader_vue_vue_type_template_id_898691ee_ts_true__WEBPACK_IMPORTED_MODULE_0__.__esModule),
-/* harmony export */   "render": () => (/* reexport safe */ _node_modules_ts_loader_index_js_clonedRuleSet_1_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_7_use_0_MyHeader_vue_vue_type_template_id_898691ee_ts_true__WEBPACK_IMPORTED_MODULE_0__.render)
-/* harmony export */ });
-/* harmony import */ var _node_modules_ts_loader_index_js_clonedRuleSet_1_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_7_use_0_MyHeader_vue_vue_type_template_id_898691ee_ts_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/ts-loader/index.js??clonedRuleSet-1!../../node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!../../node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./MyHeader.vue?vue&type=template&id=898691ee&ts=true */ "./node_modules/ts-loader/index.js??clonedRuleSet-1!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./src/components/MyHeader.vue?vue&type=template&id=898691ee&ts=true");
-
-
-/***/ }),
-
 /***/ "./src/components/TracksInput.vue?vue&type=template&id=6d8ca122&ts=true":
 /*!******************************************************************************!*\
   !*** ./src/components/TracksInput.vue?vue&type=template&id=6d8ca122&ts=true ***!
@@ -18246,6 +18174,40 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _node_modules_ts_loader_index_js_clonedRuleSet_1_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_7_use_0_TracksInput_vue_vue_type_template_id_6d8ca122_ts_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/ts-loader/index.js??clonedRuleSet-1!../../node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!../../node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./TracksInput.vue?vue&type=template&id=6d8ca122&ts=true */ "./node_modules/ts-loader/index.js??clonedRuleSet-1!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./src/components/TracksInput.vue?vue&type=template&id=6d8ca122&ts=true");
 
+
+/***/ }),
+
+/***/ "./src/components/MyHeader.vue?vue&type=template&id=898691ee":
+/*!*******************************************************************!*\
+  !*** ./src/components/MyHeader.vue?vue&type=template&id=898691ee ***!
+  \*******************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_7_use_0_MyHeader_vue_vue_type_template_id_898691ee__WEBPACK_IMPORTED_MODULE_0__.render)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_7_use_0_MyHeader_vue_vue_type_template_id_898691ee__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!../../node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./MyHeader.vue?vue&type=template&id=898691ee */ "./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./src/components/MyHeader.vue?vue&type=template&id=898691ee");
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./src/components/MyHeader.vue?vue&type=template&id=898691ee":
+/*!*************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./src/components/MyHeader.vue?vue&type=template&id=898691ee ***!
+  \*************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render)
+/* harmony export */ });
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+
+
+function render(_ctx, _cache) {
+  return ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("h1", null, "Choose tracks."))
+}
 
 /***/ }),
 
@@ -20088,17 +20050,20 @@ const vuex_1 = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.es
 const store = (0, vuex_1.createStore)({
     state() {
         return {
-            string: ''
+            trackList: []
         };
     },
     mutations: {
-        refresh(state, value) {
-            state.string = value;
+        refreshTrackList(state, newValue) {
+            state.trackList = newValue;
         }
     },
     getters: {
-        stringLength(state) {
-            return store.state.string.length;
+        trackListLength(state) {
+            return store.state.trackList.length;
+        },
+        track: (state) => (index) => {
+            return store.state.trackList[index];
         }
     }
 });

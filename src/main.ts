@@ -17,7 +17,7 @@ const store = createStore({
     trackListLength(state) {
       return store.state.trackList.length;
     },
-    track: (state) => (index) => {
+    track: (state) => (index: number) => {
       return store.state.trackList[index];
     }
   }

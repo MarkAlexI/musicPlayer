@@ -2,12 +2,14 @@
   <div class="container">
     <MyHeader />
     <TracksInput />
+    <MusicPlayer />
   </div>
 </template>
 
 <script setup lang="ts">
   import MyHeader from '@/MyHeader';
   import TracksInput from '@/TracksInput';
+  import MusicPlayer from '@/MusicPlayer';
  
 </script>
 

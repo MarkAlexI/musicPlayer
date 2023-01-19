@@ -1,7 +1,7 @@
 <template>
-  <div class="main">
+  <div class="main card-panel">
     <hr>
-    <p>{{ currTime + ' \/ ' + duration }}</p>
+    <p class="deep-purple-text">{{ currTime + ' \/ ' + duration }}</p>
     <button v-show="isPlaying" @click="pause">Pause</button>
     <button v-show="!isPlaying" @click="play">Play</button>
   </div>

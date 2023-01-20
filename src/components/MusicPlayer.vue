@@ -1,9 +1,19 @@
 <template>
   <div class="main card-panel">
     <hr>
-    <p class="deep-purple-text">{{ currTime + ' \/ ' + duration }}</p>
-    <button v-show="isPlaying" @click="pause">Pause</button>
-    <button v-show="!isPlaying" @click="play">Play</button>
+    <p class="deep-purple-text duration-info">{{ currTime + ' \/ ' + duration }}</p>
+    <button class="btn waves-effect waves-light" @click="changeTrack(-1)">Prev
+      <i class="material-icons left">navigate_before</i>
+    </button>
+    <button class="btn waves-effect waves-light" v-show="isPlaying" @click="pause">Pause
+      <i class="material-icons right">pause</i>
+    </button>
+    <button class="btn waves-effect waves-light" v-show="!isPlaying" @click="play">Play
+      <i class="material-icons right">play_arrow</i>
+    </button>
+    <button class="btn waves-effect waves-light" @click="changeTrack(1)">Next
+      <i class="material-icons right">navigate_next</i>
+    </button>
   </div>
 </template>
 
@@ -13,8 +23,12 @@
   
   const store = useStore();
   
-  const getTrack = (index: number) => {
+  const getTrack = (index: number): File => {
     return store.getters.track(index);
+  };
+  
+  const getTrackListLength = (): number => {
+    return store.getters.trackListLength;
   };
   
   const player = new Audio();
@@ -59,6 +73,19 @@
     URL.revokeObjectURL(player.src);
   };
   
+  const changeTrack = (direction: number): void => {
+    const trackListLength = getTrackListLength();
+    if (trackListLength === 0) return;
+    let nextTrack = currTrack.value + direction;
+    currTrack.value = nextTrack > trackListLength
+      ? 0
+      : nextTrack < 0
+      ? trackListLength - 1
+      : nextTrack;
+    
+    playNewTrack(currTrack.value);
+  };
+  
   store.subscribe((mutation, state) => {
     if (mutation.type === 'refreshTrackList') {
       currTrack.value = 0;
@@ -68,5 +95,19 @@
 </script>
 
 <style>
-
+  .main {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .duration-info {
+    width: 100%;
+    break-after: always;
+  }
+  
+  .btn {
+    display: block;
+  }
 </style>

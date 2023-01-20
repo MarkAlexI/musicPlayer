@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="card-panel">
     <input
       ref="input"
       @change="handleFileUpload($event)"
@@ -8,10 +8,13 @@
       accept="audio/*"
       style="display: none;">
     <button
+      class="btn waves-effect waves-light"
       ref="fileSelect"
       type="button"
       @click="input.click()"
-      >Select some files</button>
+      >Select some files
+      <i class="material-icons right">eject</i>
+    </button>
   </div>
 </template>
 

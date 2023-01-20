@@ -13,7 +13,10 @@
   import TracksInput from '@/TracksInput';
   import MusicPlayer from '@/MusicPlayer';
  
-  onMounted(async () => await M.AutoInit());
+  onMounted(async () => {
+    console.log(M);
+    await M.AutoInit();
+  });
 </script>
 
 <style>

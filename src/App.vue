@@ -30,13 +30,13 @@
   }
 
   .container {
-    max-width: 1024px;
+    max-width: 860px;
     padding-top: 1rem;
     margin: 10px 20px;
     background-color: dodgerblue;
     min-height: 250px;
     
-    @media (min-width: 1024px) {
+    @media (min-width: 480px) {
       & {
         margin: 0 auto;
       }

@@ -1,9 +1,15 @@
 <template>
   <div class="main card-panel">
-    <hr>
-    <p class="deep-purple-text duration-info">{{ currTime + ' \/ ' + duration }}</p>
-    <button class="btn waves-effect waves-light" @click="changeTrack(-1)">Prev
-      <i class="material-icons left">navigate_before</i>
+    <div class="duration-info">
+      <p class="deep-purple-text">{{ currTime + ' \/ ' + duration }}</p>
+    
+      <p>
+        <marquee behaviour="alternate" bgcolor="teal"><span class="wave">{{ trackName || 'Selected to play...' }}</span></marquee>
+      </p>
+    </div>
+    
+    <button class="btn waves-effect waves-light" @click="changeTrack(-1)">
+      <i class="material-icons">skip_previous</i>
     </button>
     <button class="btn waves-effect waves-light" v-show="isPlaying" @click="pause">Pause
       <i class="material-icons right">pause</i>
@@ -11,8 +17,8 @@
     <button class="btn waves-effect waves-light" v-show="!isPlaying" @click="play">Play
       <i class="material-icons right">play_arrow</i>
     </button>
-    <button class="btn waves-effect waves-light" @click="changeTrack(1)">Next
-      <i class="material-icons right">navigate_next</i>
+    <button class="btn waves-effect waves-light" @click="changeTrack(1)">
+      <i class="material-icons">skip_next</i>
     </button>
   </div>
 </template>
@@ -37,6 +43,7 @@
   const duration = ref(0);
   const currTrack = ref(0);
   const isPlaying = ref(false);
+  const trackName = ref('');
   
   player.addEventListener('timeupdate', () => {
     currTime.value = Math.round(player.currentTime);
@@ -55,6 +62,9 @@
   const playNewTrack = async (index: number) => {
     const track = getTrack(index);
     if (!!!track) return;
+    
+    trackName.value = track.name;
+    
     if (!!player.src) {
       player.pause();
       player.src = '';
@@ -105,6 +115,11 @@
   .duration-info {
     width: 100%;
     break-after: always;
+  }
+  
+  .wave {
+    font-size: 1.1rem;
+    color: white;
   }
   
   .btn {

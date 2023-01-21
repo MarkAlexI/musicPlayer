@@ -30380,7 +30380,8 @@ exports["default"] = (0, vue_1.defineComponent)({
         const store = (0, vuex_1.useStore)();
         const updateStore = (newTracks) => {
             store.commit('refreshTrackList', newTracks);
-            console.log(store.getters.trackListLength);
+            store.commit('refreshTrackListInfo');
+            console.log(store.getters.trackListInfo);
         };
         const input = (0, vue_2.ref)();
         const fileSelect = (0, vue_2.ref)();
@@ -32717,20 +32718,37 @@ __webpack_require__(/*! material-design-icons/iconfont/material-icons.css */ "./
 const store = (0, vuex_1.createStore)({
     state() {
         return {
-            trackList: []
+            trackList: [],
+            trackListInfo: []
         };
     },
     mutations: {
         refreshTrackList(state, newValue) {
             state.trackList = newValue;
+        },
+        refreshTrackListInfo(state) {
+            let tracksInfo = [];
+            const len = state.trackList.length;
+            const files = state.trackList;
+            for (let i = 0; i < len; i++) {
+                tracksInfo.push({
+                    name: files[i].name,
+                    size: files[i].size,
+                    index: i
+                });
+            }
+            state.trackListInfo = tracksInfo;
         }
     },
     getters: {
         trackListLength(state) {
-            return store.state.trackList.length;
+            return state.trackList.length;
         },
         track: (state) => (index) => {
-            return store.state.trackList[index];
+            return state.trackList[index];
+        },
+        trackListInfo(state) {
+            return state.trackListInfo;
         }
     }
 });

@@ -8,11 +8,11 @@
 
 <script setup lang="ts">
   import { onMounted } from 'vue';
-  import M from 'materialize-css';
+  import  M from 'materialize-css';
   import MyHeader from '@/MyHeader';
   import TracksInput from '@/TracksInput';
   import MusicPlayer from '@/MusicPlayer';
- 
+
   onMounted(async () => {
     console.log(M);
     await M.AutoInit();

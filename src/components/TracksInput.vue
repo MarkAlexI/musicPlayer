@@ -26,13 +26,14 @@
   
   const updateStore = (newTracks: Tracks) => {
     store.commit('refreshTrackList', newTracks);
-    console.log(store.getters.trackListLength);
+    store.commit('refreshTrackListInfo');
+    console.log(store.getters.trackListInfo);
   };
   
   const input = ref<HTMLInputElement | null>();
   const fileSelect = ref<HTMLButtonElement | null>();
   
-  const handleFileUpload = async ($event: Event) => {
+  const handleFileUpload = async ($event: Event): Promise<void> => {
     const target = $event.target as HTMLInputElement;
     if (target && target.files) {
       updateStore(target.files);

@@ -2,12 +2,12 @@
   <div class="main card-panel">
     <div class="duration-info">
       <p class="deep-purple-text">{{ currTime + ' \/ ' + duration }}</p>
-    
-      <p>
-        <marquee behaviour="alternate" bgcolor="teal"><span class="wave">{{ trackName || 'Selected to play...' }}</span></marquee>
-      </p>
+
+      <div class="marquee">
+        <p class="wave">{{ trackName || 'Selected to play...' }}</p>
+      </div>
     </div>
-    
+
     <button class="btn waves-effect waves-light" @click="changeTrack(-1)">
       <i class="material-icons">skip_previous</i>
     </button>
@@ -26,25 +26,25 @@
 <script setup lang="ts">
   import { ref } from 'vue';
   import { useStore } from 'vuex';
-  
+
   const store = useStore();
-  
+
   const getTrack = (index: number): File => {
     return store.getters.track(index);
   };
-  
+
   const getTrackListLength = (): number => {
     return store.getters.trackListLength;
   };
-  
+
   const player = new Audio();
-  
+
   const currTime = ref(0);
   const duration = ref(0);
   const currTrack = ref(0);
   const isPlaying = ref(false);
   const trackName = ref('');
-  
+
   player.addEventListener('timeupdate', () => {
     currTime.value = Math.round(player.currentTime);
     if (player.currentTime === player.duration) {
@@ -55,22 +55,22 @@
       playNewTrack(currTrack.value);
     }
   });
-  
+
   const pause = () => !!player.src && (isPlaying.value = !isPlaying.value, player.pause());
   const play = () => !!player.src && (isPlaying.value = !isPlaying.value, player.play());
-  
+
   const playNewTrack = async (index: number) => {
     const track = getTrack(index);
     if (!!!track) return;
-    
+
     trackName.value = track.name;
-    
+
     if (!!player.src) {
       player.pause();
       player.src = '';
       isPlaying.value = false;
     }
-  
+
     player.src = URL.createObjectURL(track);
     try {
       await player.play();
@@ -79,23 +79,23 @@
     } catch (error) {
       console.log('Failed to play, error: ' + error);
     }
-  
+
     URL.revokeObjectURL(player.src);
   };
-  
+
   const changeTrack = (direction: number): void => {
     const trackListLength = getTrackListLength();
     if (trackListLength === 0) return;
     let nextTrack = currTrack.value + direction;
-    currTrack.value = nextTrack > trackListLength
-      ? 0
-      : nextTrack < 0
-      ? trackListLength - 1
-      : nextTrack;
-    
+    currTrack.value = nextTrack > trackListLength ?
+      0 :
+      nextTrack < 0 ?
+      trackListLength - 1 :
+      nextTrack;
+
     playNewTrack(currTrack.value);
   };
-  
+
   store.subscribe((mutation, state) => {
     if (mutation.type === 'refreshTrackList') {
       currTrack.value = 0;
@@ -111,17 +111,37 @@
     justify-content: space-between;
     align-items: center;
   }
-  
+
   .duration-info {
-    width: 100%;
+    width: 420px;
     break-after: always;
+  }
+
+  .marquee {
+    overflow: hidden;
+    background-color: teal;
+    color: whitesmoke;
+    margin: .75rem auto;
+    padding: .3rem;
   }
   
   .wave {
+    display: inline-block;
+    z-index: 0;
     font-size: 1.1rem;
-    color: white;
+    animation: marquee 10s linear infinite;
   }
-  
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(100%);
+    }
+
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
   .btn {
     display: block;
   }

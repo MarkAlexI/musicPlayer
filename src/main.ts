@@ -9,7 +9,8 @@ const store = createStore({
   state() {
     return {
       trackList: [],
-      trackListInfo: []
+      trackListInfo: [],
+      currentTrack: 0
     }
   },
   mutations: {
@@ -29,6 +30,9 @@ const store = createStore({
         });
       }
       state.trackListInfo = tracksInfo;
+    },
+    refreshCurrentTrack(state, newValue) {
+      state.currentTrack = newValue;
     }
   },
   getters: {
@@ -40,6 +44,9 @@ const store = createStore({
     },
     trackListInfo(state) {
       return state.trackListInfo;
+    },
+    currentTrack(state) {
+      return state.currentTrack;
     }
   }
 });

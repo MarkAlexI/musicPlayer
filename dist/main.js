@@ -17936,6 +17936,12 @@ exports["default"] = (0, vue_1.defineComponent)({
         const getTrackListLength = () => {
             return store.getters.trackListLength;
         };
+        const getCurrTrack = () => {
+            return store.getters.currentTrack;
+        };
+        const updateCurrTrack = (newCurrTrack) => {
+            store.commit('refreshCurrentTrack', newCurrTrack);
+        };
         const player = new Audio();
         const currTime = (0, vue_2.ref)(0);
         const duration = (0, vue_2.ref)(0);
@@ -17946,10 +17952,9 @@ exports["default"] = (0, vue_1.defineComponent)({
             currTime.value = Math.round(player.currentTime);
             if (player.currentTime === player.duration) {
                 const track = getTrack(currTrack.value + 1);
-                currTrack.value = !!track ?
+                updateCurrTrack(!!track ?
                     currTrack.value + 1 :
-                    0;
-                playNewTrack(currTrack.value);
+                    0);
             }
         });
         const pause = () => !!player.src && (isPlaying.value = !isPlaying.value, player.pause());
@@ -17980,20 +17985,23 @@ exports["default"] = (0, vue_1.defineComponent)({
             if (trackListLength === 0)
                 return;
             let nextTrack = currTrack.value + direction;
-            currTrack.value = nextTrack > trackListLength ?
+            nextTrack = nextTrack > trackListLength ?
                 0 :
                 nextTrack < 0 ?
                     trackListLength - 1 :
                     nextTrack;
-            playNewTrack(currTrack.value);
+            updateCurrTrack(nextTrack);
         };
         store.subscribe((mutation, state) => {
             if (mutation.type === 'refreshTrackList') {
-                currTrack.value = 0;
+                updateCurrTrack(0);
+            }
+            if (mutation.type === 'refreshCurrentTrack') {
+                currTrack.value = getCurrTrack();
                 playNewTrack(currTrack.value);
             }
         });
-        const __returned__ = { store, getTrack, getTrackListLength, player, currTime, duration, currTrack, isPlaying, trackName, pause, play, playNewTrack, changeTrack };
+        const __returned__ = { store, getTrack, getTrackListLength, getCurrTrack, updateCurrTrack, player, currTime, duration, currTrack, isPlaying, trackName, pause, play, playNewTrack, changeTrack };
         Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true });
         return __returned__;
     }
@@ -20493,7 +20501,8 @@ const store = (0, vuex_1.createStore)({
     state() {
         return {
             trackList: [],
-            trackListInfo: []
+            trackListInfo: [],
+            currentTrack: 0
         };
     },
     mutations: {
@@ -20512,6 +20521,9 @@ const store = (0, vuex_1.createStore)({
                 });
             }
             state.trackListInfo = tracksInfo;
+        },
+        refreshCurrentTrack(state, newValue) {
+            state.currentTrack = newValue;
         }
     },
     getters: {
@@ -20523,6 +20535,9 @@ const store = (0, vuex_1.createStore)({
         },
         trackListInfo(state) {
             return state.trackListInfo;
+        },
+        currentTrack(state) {
+            return state.currentTrack;
         }
     }
 });

@@ -36,6 +36,14 @@
   const getTrackListLength = (): number => {
     return store.getters.trackListLength;
   };
+  
+  const getCurrTrack = (): number => {
+    return store.getters.currentTrack;
+  };
+  
+  const updateCurrTrack = (newCurrTrack: number): void => {
+    store.commit('refreshCurrentTrack', newCurrTrack);
+  }
 
   const player = new Audio();
 
@@ -49,10 +57,9 @@
     currTime.value = Math.round(player.currentTime);
     if (player.currentTime === player.duration) {
       const track = getTrack(currTrack.value + 1);
-      currTrack.value = !!track ?
+      updateCurrTrack(!!track ?
         currTrack.value + 1 :
-        0;
-      playNewTrack(currTrack.value);
+        0);
     }
   });
 
@@ -87,18 +94,22 @@
     const trackListLength = getTrackListLength();
     if (trackListLength === 0) return;
     let nextTrack = currTrack.value + direction;
-    currTrack.value = nextTrack > trackListLength ?
+    nextTrack = nextTrack > trackListLength ?
       0 :
       nextTrack < 0 ?
       trackListLength - 1 :
       nextTrack;
-
-    playNewTrack(currTrack.value);
+      
+    updateCurrTrack(nextTrack);
   };
 
   store.subscribe((mutation, state) => {
     if (mutation.type === 'refreshTrackList') {
-      currTrack.value = 0;
+      updateCurrTrack(0);
+    }
+    
+    if (mutation.type === 'refreshCurrentTrack') {
+      currTrack.value = getCurrTrack();
       playNewTrack(currTrack.value);
     }
   });

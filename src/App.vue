@@ -3,19 +3,20 @@
     <MyHeader />
     <TracksInput />
     <MusicPlayer />
+    <TrackList />
   </div>
 </template>
 
 <script setup lang="ts">
+  import M from 'materialize-css/dist/js/materialize.min.js';
   import { onMounted } from 'vue';
-  import  M from 'materialize-css';
   import MyHeader from '@/MyHeader';
   import TracksInput from '@/TracksInput';
   import MusicPlayer from '@/MusicPlayer';
+  import TrackList from '@/TrackList';
 
   onMounted(async () => {
-    console.log(M);
-    await M.AutoInit();
+    await (M || window.M).AutoInit();
   });
 </script>
 

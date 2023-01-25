@@ -1,16 +1,16 @@
 <template>
   <div class="card-panel">
-    <ul class="collection">
-      <li
+    <div class="collection">
+      <a
         href="#!"
         v-for="track in trackList"
         :key="track.name"
-        class="collection-item"
-        @click="log(track.index)"
+        :class="{ 'active': getCurrTrack() === track.index, 'collection-item': true }"
+        @click="updateCurrTrack(track.index)"
         >
         {{ track.name }}
-      </li>
-    </ul>
+      </a>
+    </div>
   </div>
   
 </template>
@@ -23,9 +23,14 @@
   
   const trackList = ref(null);
   
-  const log = (i: number) => {
-    console.log(i);
+  const getCurrTrack = (): number => {
+    return store.getters.currentTrack;
   };
+  
+  const updateCurrTrack = (newCurrTrack: number): void => {
+    store.commit('refreshCurrentTrack', newCurrTrack);
+    
+  }
   
   store.subscribe((mutation, state) => {
     if (mutation.type === 'refreshTrackListInfo') {

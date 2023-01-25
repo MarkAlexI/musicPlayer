@@ -18028,15 +18028,18 @@ exports["default"] = (0, vue_1.defineComponent)({
         expose();
         const store = (0, vuex_1.useStore)();
         const trackList = (0, vue_2.ref)(null);
-        const log = (i) => {
-            console.log(i);
+        const getCurrTrack = () => {
+            return store.getters.currentTrack;
+        };
+        const updateCurrTrack = (newCurrTrack) => {
+            store.commit('refreshCurrentTrack', newCurrTrack);
         };
         store.subscribe((mutation, state) => {
             if (mutation.type === 'refreshTrackListInfo') {
                 trackList.value = store.getters.trackListInfo;
             }
         });
-        const __returned__ = { store, trackList, log };
+        const __returned__ = { store, trackList, getCurrTrack, updateCurrTrack };
         Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true });
         return __returned__;
     }
@@ -18201,14 +18204,14 @@ const _hoisted_2 = { class: "collection" };
 const _hoisted_3 = ["onClick"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
     return ((0, vue_1.openBlock)(), (0, vue_1.createElementBlock)("div", _hoisted_1, [
-        (0, vue_1.createElementVNode)("ul", _hoisted_2, [
+        (0, vue_1.createElementVNode)("div", _hoisted_2, [
             ((0, vue_1.openBlock)(true), (0, vue_1.createElementBlock)(vue_1.Fragment, null, (0, vue_1.renderList)($setup.trackList, (track) => {
-                return ((0, vue_1.openBlock)(), (0, vue_1.createElementBlock)("li", {
+                return ((0, vue_1.openBlock)(), (0, vue_1.createElementBlock)("a", {
                     href: "#!",
                     key: track.name,
-                    class: "collection-item",
-                    onClick: ($event) => ($setup.log(track.index))
-                }, (0, vue_1.toDisplayString)(track.name), 9, _hoisted_3));
+                    class: (0, vue_1.normalizeClass)({ 'active': $setup.getCurrTrack() === track.index, 'collection-item': true }),
+                    onClick: ($event) => ($setup.updateCurrTrack(track.index))
+                }, (0, vue_1.toDisplayString)(track.name), 11, _hoisted_3));
             }), 128))
         ])
     ]));

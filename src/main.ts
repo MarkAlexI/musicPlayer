@@ -8,12 +8,16 @@ import 'material-design-icons/iconfont/material-icons.css'
 const store = createStore({
   state() {
     return {
+      player: null,
       trackList: [],
       trackListInfo: [],
       currentTrack: 0
     }
   },
   mutations: {
+    refreshPlayer(state, newValue) {
+      state.player = newValue;
+    },
     refreshTrackList(state, newValue) {
       state.trackList = newValue;
     },
@@ -36,6 +40,9 @@ const store = createStore({
     }
   },
   getters: {
+    player(state) {
+      return state.player;
+    },
     trackListLength(state) {
       return state.trackList.length;
     },

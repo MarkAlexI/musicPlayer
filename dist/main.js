@@ -17930,6 +17930,11 @@ exports["default"] = (0, vue_1.defineComponent)({
     setup(__props, { expose }) {
         expose();
         const store = (0, vuex_1.useStore)();
+        const canvas = (0, vue_2.ref)(null);
+        var audio = new AudioContext();
+        const getPlayer = () => {
+            return store.getters.player;
+        };
         const getTrack = (index) => {
             return store.getters.track(index);
         };
@@ -17943,6 +17948,7 @@ exports["default"] = (0, vue_1.defineComponent)({
             store.commit('refreshCurrentTrack', newCurrTrack);
         };
         const player = new Audio();
+        store.commit('refreshPlayer', player);
         const currTime = (0, vue_2.ref)(0);
         const duration = (0, vue_2.ref)(0);
         const currTrack = (0, vue_2.ref)(0);
@@ -17972,6 +17978,7 @@ exports["default"] = (0, vue_1.defineComponent)({
             player.src = URL.createObjectURL(track);
             try {
                 yield player.play();
+                audio.resume();
                 isPlaying.value = true;
                 duration.value = Math.round(player.duration) || 0;
             }
@@ -18001,7 +18008,33 @@ exports["default"] = (0, vue_1.defineComponent)({
                 playNewTrack(currTrack.value);
             }
         });
-        const __returned__ = { store, getTrack, getTrackListLength, getCurrTrack, updateCurrTrack, player, currTime, duration, currTrack, isPlaying, trackName, pause, play, playNewTrack, changeTrack };
+        (0, vue_2.onMounted)(() => {
+            if (window.AudioContext) {
+                const source = audio.createMediaElementSource(getPlayer());
+                const analyser = audio.createAnalyser();
+                const ctx = canvas.value.getContext('2d');
+                source.connect(analyser);
+                analyser.connect(audio.destination);
+                analyser.minDecibels = -80;
+                analyser.maxDecibels = -10;
+                analyser.fftSize = 32;
+                const trackData = new Uint8Array(analyser.frequencyBinCount);
+                function draw() {
+                    analyser.getByteTimeDomainData(trackData);
+                    ctx.fillStyle = 'black';
+                    ctx.fillRect(0, 0, canvas.value.width, canvas.value.height);
+                    ctx.fillStyle = 'red';
+                    const w = Math.ceil(canvas.value.width / trackData.length);
+                    for (let i = 0, x = 0; i < trackData.length; i++, x += w)
+                        ctx.fillRect(x, trackData[i], w, canvas.value.height);
+                    requestAnimationFrame(draw);
+                }
+                draw();
+            }
+            else
+                alert('Your browser does not support Web Audio');
+        });
+        const __returned__ = { store, canvas, get audio() { return audio; }, set audio(v) { audio = v; }, getPlayer, getTrack, getTrackListLength, getCurrTrack, updateCurrTrack, player, currTime, duration, currTrack, isPlaying, trackName, pause, play, playNewTrack, changeTrack };
         Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true });
         return __returned__;
     }
@@ -18133,38 +18166,43 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.render = void 0;
 const vue_1 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 const _hoisted_1 = { class: "main card-panel" };
-const _hoisted_2 = { class: "duration-info" };
-const _hoisted_3 = { class: "deep-purple-text" };
-const _hoisted_4 = { class: "marquee" };
-const _hoisted_5 = { class: "wave" };
-const _hoisted_6 = (0, vue_1.createElementVNode)("i", { class: "material-icons" }, "skip_previous", -1);
-const _hoisted_7 = [
-    _hoisted_6
+const _hoisted_2 = {
+    ref: "canvas",
+    style: { "width": "350px", "height": "100px" }
+};
+const _hoisted_3 = { class: "duration-info" };
+const _hoisted_4 = { class: "deep-purple-text" };
+const _hoisted_5 = { class: "marquee" };
+const _hoisted_6 = { class: "wave" };
+const _hoisted_7 = (0, vue_1.createElementVNode)("i", { class: "material-icons" }, "skip_previous", -1);
+const _hoisted_8 = [
+    _hoisted_7
 ];
-const _hoisted_8 = (0, vue_1.createElementVNode)("i", { class: "material-icons right" }, "pause", -1);
-const _hoisted_9 = (0, vue_1.createElementVNode)("i", { class: "material-icons right" }, "play_arrow", -1);
-const _hoisted_10 = (0, vue_1.createElementVNode)("i", { class: "material-icons" }, "skip_next", -1);
-const _hoisted_11 = [
-    _hoisted_10
+const _hoisted_9 = (0, vue_1.createElementVNode)("i", { class: "material-icons right" }, "pause", -1);
+const _hoisted_10 = (0, vue_1.createElementVNode)("i", { class: "material-icons right" }, "play_arrow", -1);
+const _hoisted_11 = (0, vue_1.createElementVNode)("i", { class: "material-icons" }, "skip_next", -1);
+const _hoisted_12 = [
+    _hoisted_11
 ];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
     return ((0, vue_1.openBlock)(), (0, vue_1.createElementBlock)("div", _hoisted_1, [
-        (0, vue_1.createElementVNode)("div", _hoisted_2, [
-            (0, vue_1.createElementVNode)("p", _hoisted_3, (0, vue_1.toDisplayString)($setup.currTime + ' \/ ' + $setup.duration), 1),
-            (0, vue_1.createElementVNode)("div", _hoisted_4, [
-                (0, vue_1.createElementVNode)("p", _hoisted_5, (0, vue_1.toDisplayString)($setup.trackName || 'Selected to play...'), 1)
+        (0, vue_1.createElementVNode)("canvas", _hoisted_2, null, 512),
+        (0, vue_1.createElementVNode)("div", _hoisted_3, [
+            (0, vue_1.createElementVNode)("p", _hoisted_4, (0, vue_1.toDisplayString)($setup.currTime + ' \/ ' + $setup.duration), 1),
+            (0, vue_1.createElementVNode)("div", _hoisted_5, [
+                (0, vue_1.createElementVNode)("p", _hoisted_6, (0, vue_1.toDisplayString)($setup.trackName || 'Selected to play...'), 1)
             ])
         ]),
         (0, vue_1.createElementVNode)("button", {
             class: "btn waves-effect waves-light",
             onClick: _cache[0] || (_cache[0] = ($event) => ($setup.changeTrack(-1)))
-        }, _hoisted_7),
+        }, _hoisted_8),
         (0, vue_1.withDirectives)((0, vue_1.createElementVNode)("button", {
             class: "btn waves-effect waves-light",
             onClick: $setup.pause
         }, [
             (0, vue_1.createTextVNode)("Pause "),
-            _hoisted_8
+            _hoisted_9
         ], 512), [
             [vue_1.vShow, $setup.isPlaying]
         ]),
@@ -18173,14 +18211,14 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
             onClick: $setup.play
         }, [
             (0, vue_1.createTextVNode)("Play "),
-            _hoisted_9
+            _hoisted_10
         ], 512), [
             [vue_1.vShow, !$setup.isPlaying]
         ]),
         (0, vue_1.createElementVNode)("button", {
             class: "btn waves-effect waves-light",
             onClick: _cache[1] || (_cache[1] = ($event) => ($setup.changeTrack(1)))
-        }, _hoisted_11)
+        }, _hoisted_12)
     ]));
 }
 exports.render = render;
@@ -20503,12 +20541,16 @@ __webpack_require__(/*! material-design-icons/iconfont/material-icons.css */ "./
 const store = (0, vuex_1.createStore)({
     state() {
         return {
+            player: null,
             trackList: [],
             trackListInfo: [],
             currentTrack: 0
         };
     },
     mutations: {
+        refreshPlayer(state, newValue) {
+            state.player = newValue;
+        },
         refreshTrackList(state, newValue) {
             state.trackList = newValue;
         },
@@ -20530,6 +20572,9 @@ const store = (0, vuex_1.createStore)({
         }
     },
     getters: {
+        player(state) {
+            return state.player;
+        },
         trackListLength(state) {
             return state.trackList.length;
         },

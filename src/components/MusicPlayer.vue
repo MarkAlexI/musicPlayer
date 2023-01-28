@@ -1,5 +1,9 @@
 <template>
   <div class="main card-panel">
+    <canvas ref="canvas" style="width: 350px;height: 100px">
+
+    </canvas>
+
     <div class="duration-info">
       <p class="deep-purple-text">{{ currTime + ' \/ ' + duration }}</p>
 
@@ -24,10 +28,16 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue';
+  import { ref, onMounted } from 'vue';
   import { useStore } from 'vuex';
 
   const store = useStore();
+
+  const canvas = ref(null);
+  var audio = new AudioContext();
+  const getPlayer = () => {
+    return store.getters.player;
+  };
 
   const getTrack = (index: number): File => {
     return store.getters.track(index);
@@ -36,16 +46,17 @@
   const getTrackListLength = (): number => {
     return store.getters.trackListLength;
   };
-  
+
   const getCurrTrack = (): number => {
     return store.getters.currentTrack;
   };
-  
+
   const updateCurrTrack = (newCurrTrack: number): void => {
     store.commit('refreshCurrentTrack', newCurrTrack);
   }
 
   const player = new Audio();
+  store.commit('refreshPlayer', player);
 
   const currTime = ref(0);
   const duration = ref(0);
@@ -81,6 +92,7 @@
     player.src = URL.createObjectURL(track);
     try {
       await player.play();
+      audio.resume();
       isPlaying.value = true;
       duration.value = Math.round(player.duration) || 0;
     } catch (error) {
@@ -99,7 +111,7 @@
       nextTrack < 0 ?
       trackListLength - 1 :
       nextTrack;
-      
+
     updateCurrTrack(nextTrack);
   };
 
@@ -107,11 +119,41 @@
     if (mutation.type === 'refreshTrackList') {
       updateCurrTrack(0);
     }
-    
+
     if (mutation.type === 'refreshCurrentTrack') {
       currTrack.value = getCurrTrack();
       playNewTrack(currTrack.value);
     }
+  });
+
+  onMounted(() => {
+    if (window.AudioContext) {
+
+      const source = audio.createMediaElementSource(getPlayer());
+      const analyser = audio.createAnalyser();
+
+      const ctx = canvas.value.getContext('2d');
+
+      source.connect(analyser);
+      analyser.connect(audio.destination);
+
+      analyser.minDecibels = -80;
+      analyser.maxDecibels = -10;
+      analyser.fftSize = 32;
+      const trackData = new Uint8Array(analyser.frequencyBinCount);
+
+      function draw() {
+        analyser.getByteTimeDomainData(trackData);
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, canvas.value.width, canvas.value.height);
+        ctx.fillStyle = 'red';
+        const w = Math.ceil(canvas.value.width / trackData.length);
+        for (let i = 0, x = 0; i < trackData.length; i++, x += w)
+          ctx.fillRect(x, trackData[i], w, canvas.value.height);
+        requestAnimationFrame(draw);
+      }
+      draw();
+    } else alert('Your browser does not support Web Audio');
   });
 </script>
 
@@ -135,7 +177,7 @@
     margin: .75rem auto;
     padding: .3rem;
   }
-  
+
   .wave {
     display: inline-block;
     z-index: 0;

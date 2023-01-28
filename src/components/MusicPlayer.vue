@@ -1,6 +1,6 @@
 <template>
   <div class="main card-panel">
-    <canvas ref="canvas" style="width: 350px;height: 100px">
+    <canvas id="visualizer" ref="canvas">
 
     </canvas>
 
@@ -127,29 +127,39 @@
   });
 
   onMounted(() => {
-    if (window.AudioContext) {
+    if (window.AudioContext || window.webkitAudioContext) {
 
       const source = audio.createMediaElementSource(getPlayer());
       const analyser = audio.createAnalyser();
 
       const ctx = canvas.value.getContext('2d');
+      const pxlBetweenBars = 2;
 
       source.connect(analyser);
       analyser.connect(audio.destination);
+      analyser.fftSize = 128;
+      const bufferLength = analyser.frequencyBinCount;
+      const trackData = new Uint8Array(bufferLength);
 
-      analyser.minDecibels = -80;
-      analyser.maxDecibels = -10;
-      analyser.fftSize = 32;
-      const trackData = new Uint8Array(analyser.frequencyBinCount);
+      const width = canvas.value.width;
+      const height = canvas.value.height;
 
       function draw() {
+        ctx.clearRect(0, 0, width, height);
         analyser.getByteTimeDomainData(trackData);
-        ctx.fillStyle = 'black';
-        ctx.fillRect(0, 0, canvas.value.width, canvas.value.height);
-        ctx.fillStyle = 'red';
-        const w = Math.ceil(canvas.value.width / trackData.length);
-        for (let i = 0, x = 0; i < trackData.length; i++, x += w)
-          ctx.fillRect(x, trackData[i], w, canvas.value.height);
+        const barWidth = width / bufferLength;
+        let barHeight;
+        let x = 0;
+        let heightScale = height / 128;
+
+        for (let i = 0; i < bufferLength; i++) {
+          barHeight = trackData[i];
+          ctx.fillStyle = 'rgb(' + ',127,17,' + barHeight + ')';
+          barHeight *= heightScale;
+          ctx.fillRect(x, height - barHeight / 2, barWidth, barHeight / 2);
+
+          x += barWidth + pxlBetweenBars;
+        }
         requestAnimationFrame(draw);
       }
       draw();
@@ -164,6 +174,37 @@
     justify-content: space-between;
     align-items: center;
   }
+
+  #visualizer {
+    animation: colorize 5s infinite;
+  }
+
+  @keyframes colorize {
+    50% {
+      background: lightskyblue;
+    }
+
+    50% {
+      background: darkcyan;
+    }
+
+    50% {
+      background: teal;
+    }
+
+    50% {
+      background: lightskyblue;
+    }
+  }
+
+  #visualizer {
+    width: 100%;
+    height: 25% !important;
+    border: 1px solid;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
 
   .duration-info {
     width: 420px;

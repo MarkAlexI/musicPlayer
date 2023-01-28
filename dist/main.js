@@ -18009,24 +18009,32 @@ exports["default"] = (0, vue_1.defineComponent)({
             }
         });
         (0, vue_2.onMounted)(() => {
-            if (window.AudioContext) {
+            if (window.AudioContext || window.webkitAudioContext) {
                 const source = audio.createMediaElementSource(getPlayer());
                 const analyser = audio.createAnalyser();
                 const ctx = canvas.value.getContext('2d');
+                const pxlBetweenBars = 2;
                 source.connect(analyser);
                 analyser.connect(audio.destination);
-                analyser.minDecibels = -80;
-                analyser.maxDecibels = -10;
-                analyser.fftSize = 32;
-                const trackData = new Uint8Array(analyser.frequencyBinCount);
+                analyser.fftSize = 128;
+                const bufferLength = analyser.frequencyBinCount;
+                const trackData = new Uint8Array(bufferLength);
+                const width = canvas.value.width;
+                const height = canvas.value.height;
                 function draw() {
+                    ctx.clearRect(0, 0, width, height);
                     analyser.getByteTimeDomainData(trackData);
-                    ctx.fillStyle = 'black';
-                    ctx.fillRect(0, 0, canvas.value.width, canvas.value.height);
-                    ctx.fillStyle = 'red';
-                    const w = Math.ceil(canvas.value.width / trackData.length);
-                    for (let i = 0, x = 0; i < trackData.length; i++, x += w)
-                        ctx.fillRect(x, trackData[i], w, canvas.value.height);
+                    const barWidth = width / bufferLength;
+                    let barHeight;
+                    let x = 0;
+                    let heightScale = height / 128;
+                    for (let i = 0; i < bufferLength; i++) {
+                        barHeight = trackData[i];
+                        ctx.fillStyle = 'rgb(' + ',127,17,' + barHeight + ')';
+                        barHeight *= heightScale;
+                        ctx.fillRect(x, height - barHeight / 2, barWidth, barHeight / 2);
+                        x += barWidth + pxlBetweenBars;
+                    }
                     requestAnimationFrame(draw);
                 }
                 draw();
@@ -18167,8 +18175,8 @@ exports.render = void 0;
 const vue_1 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 const _hoisted_1 = { class: "main card-panel" };
 const _hoisted_2 = {
-    ref: "canvas",
-    style: { "width": "350px", "height": "100px" }
+    id: "visualizer",
+    ref: "canvas"
 };
 const _hoisted_3 = { class: "duration-info" };
 const _hoisted_4 = { class: "deep-purple-text" };

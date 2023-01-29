@@ -17863,6 +17863,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/mini-css-extract-plugin/dist/loader.js!./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./src/components/TrackVisualizer.vue?vue&type=style&index=0&id=3cfb7bee&lang=css":
+/*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/mini-css-extract-plugin/dist/loader.js!./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./src/components/TrackVisualizer.vue?vue&type=style&index=0&id=3cfb7bee&lang=css ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
 /***/ "./node_modules/ts-loader/index.js??clonedRuleSet-1!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./src/App.vue?vue&type=script&setup=true&lang=ts":
 /*!*******************************************************************************************************************************************************************************!*\
   !*** ./node_modules/ts-loader/index.js??clonedRuleSet-1!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./src/App.vue?vue&type=script&setup=true&lang=ts ***!
@@ -17925,16 +17938,12 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const vue_1 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 const vue_2 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 const vuex_1 = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm-bundler.js");
+const TrackVisualizer_vue_1 = __webpack_require__(/*! @/TrackVisualizer.vue */ "./src/components/TrackVisualizer.vue");
 exports["default"] = (0, vue_1.defineComponent)({
     __name: 'MusicPlayer',
     setup(__props, { expose }) {
         expose();
         const store = (0, vuex_1.useStore)();
-        const canvas = (0, vue_2.ref)(null);
-        var audio = new AudioContext();
-        const getPlayer = () => {
-            return store.getters.player;
-        };
         const getTrack = (index) => {
             return store.getters.track(index);
         };
@@ -17978,7 +17987,6 @@ exports["default"] = (0, vue_1.defineComponent)({
             player.src = URL.createObjectURL(track);
             try {
                 yield player.play();
-                audio.resume();
                 isPlaying.value = true;
                 duration.value = Math.round(player.duration) || 0;
             }
@@ -18008,41 +18016,7 @@ exports["default"] = (0, vue_1.defineComponent)({
                 playNewTrack(currTrack.value);
             }
         });
-        (0, vue_2.onMounted)(() => {
-            if (window.AudioContext || window.webkitAudioContext) {
-                const source = audio.createMediaElementSource(getPlayer());
-                const analyser = audio.createAnalyser();
-                const ctx = canvas.value.getContext('2d');
-                const pxlBetweenBars = 2;
-                source.connect(analyser);
-                analyser.connect(audio.destination);
-                analyser.fftSize = 128;
-                const bufferLength = analyser.frequencyBinCount;
-                const trackData = new Uint8Array(bufferLength);
-                const width = canvas.value.width;
-                const height = canvas.value.height;
-                function draw() {
-                    ctx.clearRect(0, 0, width, height);
-                    analyser.getByteTimeDomainData(trackData);
-                    const barWidth = width / bufferLength;
-                    let barHeight;
-                    let x = 0;
-                    let heightScale = height / 128;
-                    for (let i = 0; i < bufferLength; i++) {
-                        barHeight = trackData[i];
-                        ctx.fillStyle = 'rgb(' + ',127,17,' + barHeight + ')';
-                        barHeight *= heightScale;
-                        ctx.fillRect(x, height - barHeight / 2, barWidth, barHeight / 2);
-                        x += barWidth + pxlBetweenBars;
-                    }
-                    requestAnimationFrame(draw);
-                }
-                draw();
-            }
-            else
-                alert('Your browser does not support Web Audio');
-        });
-        const __returned__ = { store, canvas, get audio() { return audio; }, set audio(v) { audio = v; }, getPlayer, getTrack, getTrackListLength, getCurrTrack, updateCurrTrack, player, currTime, duration, currTrack, isPlaying, trackName, pause, play, playNewTrack, changeTrack };
+        const __returned__ = { store, getTrack, getTrackListLength, getCurrTrack, updateCurrTrack, player, currTime, duration, currTrack, isPlaying, trackName, pause, play, playNewTrack, changeTrack, TrackVisualizer: TrackVisualizer_vue_1.default };
         Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true });
         return __returned__;
     }
@@ -18081,6 +18055,75 @@ exports["default"] = (0, vue_1.defineComponent)({
             }
         });
         const __returned__ = { store, trackList, getCurrTrack, updateCurrTrack };
+        Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true });
+        return __returned__;
+    }
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/ts-loader/index.js??clonedRuleSet-1!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./src/components/TrackVisualizer.vue?vue&type=script&setup=true&lang=ts":
+/*!******************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/ts-loader/index.js??clonedRuleSet-1!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./src/components/TrackVisualizer.vue?vue&type=script&setup=true&lang=ts ***!
+  \******************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const vue_1 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+const vue_2 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+const vuex_1 = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm-bundler.js");
+exports["default"] = (0, vue_1.defineComponent)({
+    __name: 'TrackVisualizer',
+    setup(__props, { expose }) {
+        expose();
+        const store = (0, vuex_1.useStore)();
+        const canvas = (0, vue_2.ref)(null);
+        const audio = new AudioContext();
+        const getPlayer = () => {
+            return store.getters.player;
+        };
+        const player = getPlayer();
+        player.addEventListener('play', (event) => {
+            audio.resume();
+        });
+        (0, vue_2.onMounted)(() => {
+            if (window.AudioContext || window.webkitAudioContext) {
+                const source = audio.createMediaElementSource(player);
+                const analyser = audio.createAnalyser();
+                const ctx = canvas.value.getContext('2d');
+                const pxlBetweenBars = 2;
+                source.connect(analyser);
+                analyser.connect(audio.destination);
+                analyser.fftSize = 128;
+                const bufferLength = analyser.frequencyBinCount;
+                const trackData = new Uint8Array(bufferLength);
+                const width = canvas.value.width;
+                const height = canvas.value.height;
+                function draw() {
+                    ctx.clearRect(0, 0, width, height);
+                    analyser.getByteTimeDomainData(trackData);
+                    const barWidth = width / bufferLength;
+                    let barHeight;
+                    let x = 0;
+                    let heightScale = height / 128;
+                    for (let i = 0; i < bufferLength; i++) {
+                        barHeight = trackData[i];
+                        ctx.fillStyle = 'rgb(' + ',127,17,' + barHeight + ')';
+                        barHeight *= heightScale;
+                        ctx.fillRect(x, height - barHeight / 2, barWidth, barHeight / 2);
+                        x += barWidth + pxlBetweenBars;
+                    }
+                    requestAnimationFrame(draw);
+                }
+                draw();
+            }
+            else
+                alert('Your browser does not support Web Audio');
+        });
+        const __returned__ = { store, canvas, audio, getPlayer, player };
         Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true });
         return __returned__;
     }
@@ -18174,43 +18217,39 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.render = void 0;
 const vue_1 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 const _hoisted_1 = { class: "main card-panel" };
-const _hoisted_2 = {
-    id: "visualizer",
-    ref: "canvas"
-};
-const _hoisted_3 = { class: "duration-info" };
-const _hoisted_4 = { class: "deep-purple-text" };
-const _hoisted_5 = { class: "marquee" };
-const _hoisted_6 = { class: "wave" };
-const _hoisted_7 = (0, vue_1.createElementVNode)("i", { class: "material-icons" }, "skip_previous", -1);
-const _hoisted_8 = [
-    _hoisted_7
+const _hoisted_2 = { class: "duration-info" };
+const _hoisted_3 = { class: "deep-purple-text" };
+const _hoisted_4 = { class: "marquee" };
+const _hoisted_5 = { class: "wave" };
+const _hoisted_6 = (0, vue_1.createElementVNode)("i", { class: "material-icons" }, "skip_previous", -1);
+const _hoisted_7 = [
+    _hoisted_6
 ];
-const _hoisted_9 = (0, vue_1.createElementVNode)("i", { class: "material-icons right" }, "pause", -1);
-const _hoisted_10 = (0, vue_1.createElementVNode)("i", { class: "material-icons right" }, "play_arrow", -1);
-const _hoisted_11 = (0, vue_1.createElementVNode)("i", { class: "material-icons" }, "skip_next", -1);
-const _hoisted_12 = [
-    _hoisted_11
+const _hoisted_8 = (0, vue_1.createElementVNode)("i", { class: "material-icons right" }, "pause", -1);
+const _hoisted_9 = (0, vue_1.createElementVNode)("i", { class: "material-icons right" }, "play_arrow", -1);
+const _hoisted_10 = (0, vue_1.createElementVNode)("i", { class: "material-icons" }, "skip_next", -1);
+const _hoisted_11 = [
+    _hoisted_10
 ];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
     return ((0, vue_1.openBlock)(), (0, vue_1.createElementBlock)("div", _hoisted_1, [
-        (0, vue_1.createElementVNode)("canvas", _hoisted_2, null, 512),
-        (0, vue_1.createElementVNode)("div", _hoisted_3, [
-            (0, vue_1.createElementVNode)("p", _hoisted_4, (0, vue_1.toDisplayString)($setup.currTime + ' \/ ' + $setup.duration), 1),
-            (0, vue_1.createElementVNode)("div", _hoisted_5, [
-                (0, vue_1.createElementVNode)("p", _hoisted_6, (0, vue_1.toDisplayString)($setup.trackName || 'Selected to play...'), 1)
+        (0, vue_1.createVNode)($setup["TrackVisualizer"]),
+        (0, vue_1.createElementVNode)("div", _hoisted_2, [
+            (0, vue_1.createElementVNode)("p", _hoisted_3, (0, vue_1.toDisplayString)($setup.currTime + ' \/ ' + $setup.duration), 1),
+            (0, vue_1.createElementVNode)("div", _hoisted_4, [
+                (0, vue_1.createElementVNode)("p", _hoisted_5, (0, vue_1.toDisplayString)($setup.trackName || 'Selected to play...'), 1)
             ])
         ]),
         (0, vue_1.createElementVNode)("button", {
             class: "btn waves-effect waves-light",
             onClick: _cache[0] || (_cache[0] = ($event) => ($setup.changeTrack(-1)))
-        }, _hoisted_8),
+        }, _hoisted_7),
         (0, vue_1.withDirectives)((0, vue_1.createElementVNode)("button", {
             class: "btn waves-effect waves-light",
             onClick: $setup.pause
         }, [
             (0, vue_1.createTextVNode)("Pause "),
-            _hoisted_9
+            _hoisted_8
         ], 512), [
             [vue_1.vShow, $setup.isPlaying]
         ]),
@@ -18219,14 +18258,14 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
             onClick: $setup.play
         }, [
             (0, vue_1.createTextVNode)("Play "),
-            _hoisted_10
+            _hoisted_9
         ], 512), [
             [vue_1.vShow, !$setup.isPlaying]
         ]),
         (0, vue_1.createElementVNode)("button", {
             class: "btn waves-effect waves-light",
             onClick: _cache[1] || (_cache[1] = ($event) => ($setup.changeTrack(1)))
-        }, _hoisted_12)
+        }, _hoisted_11)
     ]));
 }
 exports.render = render;
@@ -18261,6 +18300,29 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
             }), 128))
         ])
     ]));
+}
+exports.render = render;
+
+
+/***/ }),
+
+/***/ "./node_modules/ts-loader/index.js??clonedRuleSet-1!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./src/components/TrackVisualizer.vue?vue&type=template&id=3cfb7bee&ts=true":
+/*!*******************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/ts-loader/index.js??clonedRuleSet-1!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./src/components/TrackVisualizer.vue?vue&type=template&id=3cfb7bee&ts=true ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.render = void 0;
+const vue_1 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+const _hoisted_1 = {
+    id: "visualizer",
+    ref: "canvas"
+};
+function render(_ctx, _cache, $props, $setup, $data, $options) {
+    return ((0, vue_1.openBlock)(), (0, vue_1.createElementBlock)("canvas", _hoisted_1, null, 512));
 }
 exports.render = render;
 
@@ -18454,6 +18516,38 @@ if (false) {}
 
 /***/ }),
 
+/***/ "./src/components/TrackVisualizer.vue":
+/*!********************************************!*\
+  !*** ./src/components/TrackVisualizer.vue ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "__esModule": () => (/* reexport safe */ _TrackVisualizer_vue_vue_type_script_setup_true_lang_ts__WEBPACK_IMPORTED_MODULE_1__.__esModule),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _TrackVisualizer_vue_vue_type_template_id_3cfb7bee_ts_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TrackVisualizer.vue?vue&type=template&id=3cfb7bee&ts=true */ "./src/components/TrackVisualizer.vue?vue&type=template&id=3cfb7bee&ts=true");
+/* harmony import */ var _TrackVisualizer_vue_vue_type_script_setup_true_lang_ts__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TrackVisualizer.vue?vue&type=script&setup=true&lang=ts */ "./src/components/TrackVisualizer.vue?vue&type=script&setup=true&lang=ts");
+/* harmony import */ var _TrackVisualizer_vue_vue_type_style_index_0_id_3cfb7bee_lang_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TrackVisualizer.vue?vue&type=style&index=0&id=3cfb7bee&lang=css */ "./src/components/TrackVisualizer.vue?vue&type=style&index=0&id=3cfb7bee&lang=css");
+/* harmony import */ var _storage_emulated_0_Android_data_io_spck_editor_node_files_musicPlayer_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
+
+
+
+
+;
+
+
+const __exports__ = /*#__PURE__*/(0,_storage_emulated_0_Android_data_io_spck_editor_node_files_musicPlayer_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__["default"])(_TrackVisualizer_vue_vue_type_script_setup_true_lang_ts__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_TrackVisualizer_vue_vue_type_template_id_3cfb7bee_ts_true__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"src/components/TrackVisualizer.vue"]])
+/* hot reload */
+if (false) {}
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__exports__);
+
+/***/ }),
+
 /***/ "./src/components/TracksInput.vue":
 /*!****************************************!*\
   !*** ./src/components/TracksInput.vue ***!
@@ -18524,6 +18618,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/components/TrackVisualizer.vue?vue&type=style&index=0&id=3cfb7bee&lang=css":
+/*!****************************************************************************************!*\
+  !*** ./src/components/TrackVisualizer.vue?vue&type=style&index=0&id=3cfb7bee&lang=css ***!
+  \****************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_7_use_0_TrackVisualizer_vue_vue_type_style_index_0_id_3cfb7bee_lang_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/mini-css-extract-plugin/dist/loader.js!../../node_modules/css-loader/dist/cjs.js!../../node_modules/vue-loader/dist/stylePostLoader.js!../../node_modules/postcss-loader/dist/cjs.js!../../node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./TrackVisualizer.vue?vue&type=style&index=0&id=3cfb7bee&lang=css */ "./node_modules/mini-css-extract-plugin/dist/loader.js!./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./src/components/TrackVisualizer.vue?vue&type=style&index=0&id=3cfb7bee&lang=css");
+
+
+/***/ }),
+
 /***/ "./src/App.vue?vue&type=script&setup=true&lang=ts":
 /*!********************************************************!*\
   !*** ./src/App.vue?vue&type=script&setup=true&lang=ts ***!
@@ -18577,6 +18684,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* reexport safe */ _node_modules_ts_loader_index_js_clonedRuleSet_1_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_7_use_0_TrackList_vue_vue_type_script_setup_true_lang_ts__WEBPACK_IMPORTED_MODULE_0__["default"])
 /* harmony export */ });
 /* harmony import */ var _node_modules_ts_loader_index_js_clonedRuleSet_1_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_7_use_0_TrackList_vue_vue_type_script_setup_true_lang_ts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/ts-loader/index.js??clonedRuleSet-1!../../node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./TrackList.vue?vue&type=script&setup=true&lang=ts */ "./node_modules/ts-loader/index.js??clonedRuleSet-1!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./src/components/TrackList.vue?vue&type=script&setup=true&lang=ts");
+ 
+
+/***/ }),
+
+/***/ "./src/components/TrackVisualizer.vue?vue&type=script&setup=true&lang=ts":
+/*!*******************************************************************************!*\
+  !*** ./src/components/TrackVisualizer.vue?vue&type=script&setup=true&lang=ts ***!
+  \*******************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "__esModule": () => (/* reexport safe */ _node_modules_ts_loader_index_js_clonedRuleSet_1_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_7_use_0_TrackVisualizer_vue_vue_type_script_setup_true_lang_ts__WEBPACK_IMPORTED_MODULE_0__.__esModule),
+/* harmony export */   "default": () => (/* reexport safe */ _node_modules_ts_loader_index_js_clonedRuleSet_1_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_7_use_0_TrackVisualizer_vue_vue_type_script_setup_true_lang_ts__WEBPACK_IMPORTED_MODULE_0__["default"])
+/* harmony export */ });
+/* harmony import */ var _node_modules_ts_loader_index_js_clonedRuleSet_1_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_7_use_0_TrackVisualizer_vue_vue_type_script_setup_true_lang_ts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/ts-loader/index.js??clonedRuleSet-1!../../node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./TrackVisualizer.vue?vue&type=script&setup=true&lang=ts */ "./node_modules/ts-loader/index.js??clonedRuleSet-1!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./src/components/TrackVisualizer.vue?vue&type=script&setup=true&lang=ts");
  
 
 /***/ }),
@@ -18648,6 +18772,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "render": () => (/* reexport safe */ _node_modules_ts_loader_index_js_clonedRuleSet_1_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_7_use_0_TrackList_vue_vue_type_template_id_f723f7ee_ts_true__WEBPACK_IMPORTED_MODULE_0__.render)
 /* harmony export */ });
 /* harmony import */ var _node_modules_ts_loader_index_js_clonedRuleSet_1_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_7_use_0_TrackList_vue_vue_type_template_id_f723f7ee_ts_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/ts-loader/index.js??clonedRuleSet-1!../../node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!../../node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./TrackList.vue?vue&type=template&id=f723f7ee&ts=true */ "./node_modules/ts-loader/index.js??clonedRuleSet-1!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./src/components/TrackList.vue?vue&type=template&id=f723f7ee&ts=true");
+
+
+/***/ }),
+
+/***/ "./src/components/TrackVisualizer.vue?vue&type=template&id=3cfb7bee&ts=true":
+/*!**********************************************************************************!*\
+  !*** ./src/components/TrackVisualizer.vue?vue&type=template&id=3cfb7bee&ts=true ***!
+  \**********************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "__esModule": () => (/* reexport safe */ _node_modules_ts_loader_index_js_clonedRuleSet_1_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_7_use_0_TrackVisualizer_vue_vue_type_template_id_3cfb7bee_ts_true__WEBPACK_IMPORTED_MODULE_0__.__esModule),
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_ts_loader_index_js_clonedRuleSet_1_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_7_use_0_TrackVisualizer_vue_vue_type_template_id_3cfb7bee_ts_true__WEBPACK_IMPORTED_MODULE_0__.render)
+/* harmony export */ });
+/* harmony import */ var _node_modules_ts_loader_index_js_clonedRuleSet_1_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_7_use_0_TrackVisualizer_vue_vue_type_template_id_3cfb7bee_ts_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/ts-loader/index.js??clonedRuleSet-1!../../node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!../../node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./TrackVisualizer.vue?vue&type=template&id=3cfb7bee&ts=true */ "./node_modules/ts-loader/index.js??clonedRuleSet-1!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[7].use[0]!./src/components/TrackVisualizer.vue?vue&type=template&id=3cfb7bee&ts=true");
 
 
 /***/ }),

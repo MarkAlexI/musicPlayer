@@ -2,6 +2,7 @@
   <div class="container">
     <MyHeader />
     <TracksInput />
+    <TrackEqualizer />
     <MusicPlayer />
     <TrackList />
   </div>
@@ -12,6 +13,7 @@
   import { onMounted } from 'vue';
   import MyHeader from '@/MyHeader';
   import TracksInput from '@/TracksInput';
+  import TrackEqualizer from '@/TrackEqualizer.vue';
   import MusicPlayer from '@/MusicPlayer';
   import TrackList from '@/TrackList';
 
@@ -30,7 +32,7 @@
     background-color: lightcyan;
   }
 
-  .container {
+/*  .container {
     max-width: 860px;
     padding-top: 1rem;
     margin: 10px 20px;
@@ -42,5 +44,5 @@
         margin: 0 auto;
       }
     }
-  }
+  }*/
 </style>

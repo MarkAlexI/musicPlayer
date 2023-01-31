@@ -9,6 +9,7 @@ const store = createStore({
   state() {
     return {
       player: null,
+      showEqualizer: false,
       trackList: [],
       trackListInfo: [],
       currentTrack: 0
@@ -17,6 +18,9 @@ const store = createStore({
   mutations: {
     refreshPlayer(state, newValue) {
       state.player = newValue;
+    },
+    refreshShowEqualizer(state) {
+      state.showEqualizer = !state.showEqualizer;
     },
     refreshTrackList(state, newValue) {
       state.trackList = newValue;
@@ -42,6 +46,9 @@ const store = createStore({
   getters: {
     player(state) {
       return state.player;
+    },
+    showEqualizer(state) {
+      return state.showEqualizer;
     },
     trackListLength(state) {
       return state.trackList.length;

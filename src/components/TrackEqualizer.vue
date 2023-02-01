@@ -3,13 +3,19 @@
     <div>
       <div class="">
         <form action="#">
-          <p class="range-field">
-            <input class="range" type="range" min="-50" max="50" value="0" />
-          </p>
           <div class="controls">
             <label>Master volume</label>
-            <input type="range" step="0.1" min="0" max="10" v-model="volumeLevel"/>
-            <output ref="masterGainOutput">{{ volumeLevel }}&nbsp;&nbsp;&nbsp;&nbsp;</output>
+            <input
+              type="range"
+              step="0.1"
+              min="0"
+              max="10"
+              v-model="volumeLevel"
+              @change="updateVolume(volumeLevel)"
+            />
+            <output>
+              {{ volumeLevel }}&nbsp;&nbsp;&nbsp;&nbsp;
+            </output>
           </div>
         </form>
       </div>
@@ -23,12 +29,16 @@
 
   const hidden = ref(false);
   const volumeLevel = ref(10);
-  const masterGainOutput = ref(null);
+  
   const store = useStore();
 
   const getShowEqualizer = () => {
     return store.getters.showEqualizer;
   };
+  
+  const updateVolume = (newVolumeLevel: string): void => {
+    store.commit('refreshVolume', parseFloat(newVolumeLevel));
+  }
 
   store.subscribe((mutation, state) => {
     if (mutation.type === 'refreshShowEqualizer') {
@@ -56,6 +66,6 @@
     padding: 0;
     margin: 0;
     font-family: "Open Sans", Verdana, Geneva, sans-serif, sans-serif;
-    font-size: 12px;
+    font-size: .75rem;
   }
 </style>

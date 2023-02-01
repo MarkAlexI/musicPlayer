@@ -2,7 +2,6 @@
   <canvas id="visualizer" ref="canvas">
 
   </canvas>
-  <button @click="changeMasterGain(5)">£¢€</button>
 </template>
 
 <script setup lang="ts">
@@ -12,14 +11,19 @@
   const masterGain = ref(null);
 
   const store = useStore();
-  const changeMasterGain = (value) => {
+  const changeMasterGain = (value: number) => {
     masterGain.value.gain.value = value / 10;
   };
 
   const canvas = ref(null);
   const audio = new AudioContext();
+  
   const getPlayer = () => {
     return store.getters.player;
+  };
+  
+  const getVolume = () => {
+    return store.getters.volume;
   };
   
   const player = getPlayer();
@@ -40,8 +44,6 @@
       source.connect(masterGain.value);
       masterGain.value.connect(analyser);
       analyser.connect(audio.destination);
-      
-      
       
       analyser.fftSize = 128;
       const bufferLength = analyser.frequencyBinCount;
@@ -69,6 +71,12 @@
         requestAnimationFrame(draw);
       }
       draw();
+      
+      store.subscribe((mutation, state) => {
+        if (mutation.type === 'refreshVolume') {
+          changeMasterGain(getVolume());
+        }
+      });
     } else alert('Your browser does not support Web Audio');
   });
 </script>

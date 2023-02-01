@@ -18102,17 +18102,19 @@ exports["default"] = (0, vue_1.defineComponent)({
         expose();
         const hidden = (0, vue_2.ref)(false);
         const volumeLevel = (0, vue_2.ref)(10);
-        const masterGainOutput = (0, vue_2.ref)(null);
         const store = (0, vuex_1.useStore)();
         const getShowEqualizer = () => {
             return store.getters.showEqualizer;
+        };
+        const updateVolume = (newVolumeLevel) => {
+            store.commit('refreshVolume', parseFloat(newVolumeLevel));
         };
         store.subscribe((mutation, state) => {
             if (mutation.type === 'refreshShowEqualizer') {
                 hidden.value = getShowEqualizer();
             }
         });
-        const __returned__ = { hidden, volumeLevel, masterGainOutput, store, getShowEqualizer };
+        const __returned__ = { hidden, volumeLevel, store, getShowEqualizer, updateVolume };
         Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true });
         return __returned__;
     }
@@ -18185,6 +18187,9 @@ exports["default"] = (0, vue_1.defineComponent)({
         const getPlayer = () => {
             return store.getters.player;
         };
+        const getVolume = () => {
+            return store.getters.volume;
+        };
         const player = getPlayer();
         player.addEventListener('play', (event) => {
             audio.resume();
@@ -18222,11 +18227,16 @@ exports["default"] = (0, vue_1.defineComponent)({
                     requestAnimationFrame(draw);
                 }
                 draw();
+                store.subscribe((mutation, state) => {
+                    if (mutation.type === 'refreshVolume') {
+                        changeMasterGain(getVolume());
+                    }
+                });
             }
             else
                 alert('Your browser does not support Web Audio');
         });
-        const __returned__ = { masterGain, store, changeMasterGain, canvas, audio, getPlayer, player };
+        const __returned__ = { masterGain, store, changeMasterGain, canvas, audio, getPlayer, getVolume, player };
         Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true });
         return __returned__;
     }
@@ -18424,17 +18434,8 @@ exports.render = void 0;
 const vue_1 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 const _hoisted_1 = { class: "" };
 const _hoisted_2 = { action: "#" };
-const _hoisted_3 = (0, vue_1.createElementVNode)("p", { class: "range-field" }, [
-    (0, vue_1.createElementVNode)("input", {
-        class: "range",
-        type: "range",
-        min: "-50",
-        max: "50",
-        value: "0"
-    })
-], -1);
-const _hoisted_4 = { class: "controls" };
-const _hoisted_5 = (0, vue_1.createElementVNode)("label", null, "Master volume", -1);
+const _hoisted_3 = { class: "controls" };
+const _hoisted_4 = (0, vue_1.createElementVNode)("label", null, "Master volume", -1);
 function render(_ctx, _cache, $props, $setup, $data, $options) {
     return ((0, vue_1.openBlock)(), (0, vue_1.createElementBlock)("div", {
         class: (0, vue_1.normalizeClass)({ 'card-panel': true, 'hidden': !$setup.hidden })
@@ -18442,19 +18443,19 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         (0, vue_1.createElementVNode)("div", null, [
             (0, vue_1.createElementVNode)("div", _hoisted_1, [
                 (0, vue_1.createElementVNode)("form", _hoisted_2, [
-                    _hoisted_3,
-                    (0, vue_1.createElementVNode)("div", _hoisted_4, [
-                        _hoisted_5,
+                    (0, vue_1.createElementVNode)("div", _hoisted_3, [
+                        _hoisted_4,
                         (0, vue_1.withDirectives)((0, vue_1.createElementVNode)("input", {
                             type: "range",
                             step: "0.1",
                             min: "0",
                             max: "10",
-                            "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => (($setup.volumeLevel) = $event))
-                        }, null, 512), [
+                            "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => (($setup.volumeLevel) = $event)),
+                            onChange: _cache[1] || (_cache[1] = ($event) => ($setup.updateVolume($setup.volumeLevel)))
+                        }, null, 544), [
                             [vue_1.vModelText, $setup.volumeLevel]
                         ]),
-                        (0, vue_1.createElementVNode)("output", { ref: "masterGainOutput" }, (0, vue_1.toDisplayString)($setup.volumeLevel) + "    ", 513)
+                        (0, vue_1.createElementVNode)("output", null, (0, vue_1.toDisplayString)($setup.volumeLevel) + "     ", 1)
                     ])
                 ])
             ])
@@ -18515,12 +18516,7 @@ const _hoisted_1 = {
     ref: "canvas"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-    return ((0, vue_1.openBlock)(), (0, vue_1.createElementBlock)(vue_1.Fragment, null, [
-        (0, vue_1.createElementVNode)("canvas", _hoisted_1, null, 512),
-        (0, vue_1.createElementVNode)("button", {
-            onClick: _cache[0] || (_cache[0] = ($event) => ($setup.changeMasterGain(5)))
-        }, "£¢€")
-    ], 64));
+    return ((0, vue_1.openBlock)(), (0, vue_1.createElementBlock)("canvas", _hoisted_1, null, 512));
 }
 exports.render = render;
 

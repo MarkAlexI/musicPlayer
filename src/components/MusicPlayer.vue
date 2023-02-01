@@ -85,7 +85,7 @@
     player.src = URL.createObjectURL(track);
     try {
       await player.play();
-     // audio.resume();
+      
       isPlaying.value = true;
       duration.value = Math.round(player.duration) || 0;
     } catch (error) {

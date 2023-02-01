@@ -2,13 +2,19 @@
   <canvas id="visualizer" ref="canvas">
 
   </canvas>
+  <button @click="changeMasterGain(5)">£¢€</button>
 </template>
 
 <script setup lang="ts">
   import { ref, onMounted } from 'vue';
   import { useStore } from 'vuex';
+  
+  const masterGain = ref(null);
 
   const store = useStore();
+  const changeMasterGain = (value) => {
+    masterGain.value.gain.value = value / 10;
+  };
 
   const canvas = ref(null);
   const audio = new AudioContext();
@@ -26,12 +32,17 @@
 
       const source = audio.createMediaElementSource(player);
       const analyser = audio.createAnalyser();
-
+      masterGain.value = audio.createGain();
+      masterGain.value.gain.value = 1;
       const ctx = canvas.value.getContext('2d');
       const pxlBetweenBars = 2;
 
-      source.connect(analyser);
+      source.connect(masterGain.value);
+      masterGain.value.connect(analyser);
       analyser.connect(audio.destination);
+      
+      
+      
       analyser.fftSize = 128;
       const bufferLength = analyser.frequencyBinCount;
       const trackData = new Uint8Array(bufferLength);

@@ -9,6 +9,7 @@ const store = createStore({
   state() {
     return {
       player: null,
+      volume: null,
       showEqualizer: false,
       trackList: [],
       trackListInfo: [],
@@ -18,6 +19,9 @@ const store = createStore({
   mutations: {
     refreshPlayer(state, newValue) {
       state.player = newValue;
+    },
+    refreshVolume(state, newValue) {
+      state.volume = newValue;
     },
     refreshShowEqualizer(state) {
       state.showEqualizer = !state.showEqualizer;
@@ -46,6 +50,9 @@ const store = createStore({
   getters: {
     player(state) {
       return state.player;
+    },
+    volume(state) {
+      return state.volume;
     },
     showEqualizer(state) {
       return state.showEqualizer;

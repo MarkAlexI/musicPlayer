@@ -10,6 +10,7 @@ const store = createStore({
     return {
       player: null,
       volume: null,
+      balance: 0,
       showEqualizer: false,
       trackList: [],
       trackListInfo: [],
@@ -22,6 +23,9 @@ const store = createStore({
     },
     refreshVolume(state, newValue) {
       state.volume = newValue;
+    },
+    refreshBalance(state, newValue) {
+      state.balance = newValue;
     },
     refreshShowEqualizer(state) {
       state.showEqualizer = !state.showEqualizer;
@@ -53,6 +57,9 @@ const store = createStore({
     },
     volume(state) {
       return state.volume;
+    },
+    balance(state) {
+      return state.balance;
     },
     showEqualizer(state) {
       return state.showEqualizer;

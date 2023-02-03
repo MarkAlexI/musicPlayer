@@ -18102,6 +18102,7 @@ exports["default"] = (0, vue_1.defineComponent)({
         expose();
         const hidden = (0, vue_2.ref)(false);
         const volumeLevel = (0, vue_2.ref)(10);
+        const balance = (0, vue_2.ref)(0);
         const store = (0, vuex_1.useStore)();
         const getShowEqualizer = () => {
             return store.getters.showEqualizer;
@@ -18109,12 +18110,15 @@ exports["default"] = (0, vue_1.defineComponent)({
         const updateVolume = (newVolumeLevel) => {
             store.commit('refreshVolume', parseFloat(newVolumeLevel));
         };
+        const updateBalance = (newBalance) => {
+            store.commit('refreshBalance', parseFloat(newBalance));
+        };
         store.subscribe((mutation, state) => {
             if (mutation.type === 'refreshShowEqualizer') {
                 hidden.value = getShowEqualizer();
             }
         });
-        const __returned__ = { hidden, volumeLevel, store, getShowEqualizer, updateVolume };
+        const __returned__ = { hidden, volumeLevel, balance, store, getShowEqualizer, updateVolume, updateBalance };
         Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true });
         return __returned__;
     }
@@ -18178,6 +18182,7 @@ exports["default"] = (0, vue_1.defineComponent)({
     setup(__props, { expose }) {
         expose();
         const masterGain = (0, vue_2.ref)(null);
+        const stereoPanner = (0, vue_2.ref)(null);
         const store = (0, vuex_1.useStore)();
         const changeMasterGain = (value) => {
             masterGain.value.gain.value = value / 10;
@@ -18189,6 +18194,9 @@ exports["default"] = (0, vue_1.defineComponent)({
         };
         const getVolume = () => {
             return store.getters.volume;
+        };
+        const getBalance = () => {
+            return store.getters.balance;
         };
         const player = getPlayer();
         player.addEventListener('play', (event) => {
@@ -18203,7 +18211,9 @@ exports["default"] = (0, vue_1.defineComponent)({
                 const ctx = canvas.value.getContext('2d');
                 const pxlBetweenBars = 2;
                 source.connect(masterGain.value);
-                masterGain.value.connect(analyser);
+                stereoPanner.value = audio.createStereoPanner();
+                masterGain.value.connect(stereoPanner.value);
+                stereoPanner.value.connect(analyser);
                 analyser.connect(audio.destination);
                 analyser.fftSize = 128;
                 const bufferLength = analyser.frequencyBinCount;
@@ -18231,12 +18241,15 @@ exports["default"] = (0, vue_1.defineComponent)({
                     if (mutation.type === 'refreshVolume') {
                         changeMasterGain(getVolume());
                     }
+                    if (mutation.type === 'refreshBalance') {
+                        stereoPanner.value.pan.value = getBalance();
+                    }
                 });
             }
             else
                 alert('Your browser does not support Web Audio');
         });
-        const __returned__ = { masterGain, store, changeMasterGain, canvas, audio, getPlayer, getVolume, player };
+        const __returned__ = { masterGain, stereoPanner, store, changeMasterGain, canvas, audio, getPlayer, getVolume, getBalance, player };
         Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true });
         return __returned__;
     }
@@ -18436,6 +18449,8 @@ const _hoisted_1 = { class: "" };
 const _hoisted_2 = { action: "#" };
 const _hoisted_3 = { class: "controls" };
 const _hoisted_4 = (0, vue_1.createElementVNode)("label", null, "Master volume", -1);
+const _hoisted_5 = { class: "controls" };
+const _hoisted_6 = (0, vue_1.createElementVNode)("label", null, "Balance", -1);
 function render(_ctx, _cache, $props, $setup, $data, $options) {
     return ((0, vue_1.openBlock)(), (0, vue_1.createElementBlock)("div", {
         class: (0, vue_1.normalizeClass)({ 'card-panel': true, 'hidden': !$setup.hidden })
@@ -18451,11 +18466,25 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                             min: "0",
                             max: "10",
                             "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => (($setup.volumeLevel) = $event)),
-                            onChange: _cache[1] || (_cache[1] = ($event) => ($setup.updateVolume($setup.volumeLevel)))
+                            onInput: _cache[1] || (_cache[1] = ($event) => ($setup.updateVolume($setup.volumeLevel)))
                         }, null, 544), [
                             [vue_1.vModelText, $setup.volumeLevel]
                         ]),
                         (0, vue_1.createElementVNode)("output", null, (0, vue_1.toDisplayString)($setup.volumeLevel) + "     ", 1)
+                    ]),
+                    (0, vue_1.createElementVNode)("div", _hoisted_5, [
+                        _hoisted_6,
+                        (0, vue_1.withDirectives)((0, vue_1.createElementVNode)("input", {
+                            type: "range",
+                            step: "0.1",
+                            min: "-1",
+                            max: "1",
+                            "onUpdate:modelValue": _cache[2] || (_cache[2] = ($event) => (($setup.balance) = $event)),
+                            onChange: _cache[3] || (_cache[3] = ($event) => ($setup.updateBalance($setup.balance)))
+                        }, null, 544), [
+                            [vue_1.vModelText, $setup.balance]
+                        ]),
+                        (0, vue_1.createElementVNode)("output", null, (0, vue_1.toDisplayString)($setup.balance) + "     ", 1)
                     ])
                 ])
             ])
@@ -21048,6 +21077,7 @@ const store = (0, vuex_1.createStore)({
         return {
             player: null,
             volume: null,
+            balance: 0,
             showEqualizer: false,
             trackList: [],
             trackListInfo: [],
@@ -21060,6 +21090,9 @@ const store = (0, vuex_1.createStore)({
         },
         refreshVolume(state, newValue) {
             state.volume = newValue;
+        },
+        refreshBalance(state, newValue) {
+            state.balance = newValue;
         },
         refreshShowEqualizer(state) {
             state.showEqualizer = !state.showEqualizer;
@@ -21090,6 +21123,9 @@ const store = (0, vuex_1.createStore)({
         },
         volume(state) {
             return state.volume;
+        },
+        balance(state) {
+            return state.balance;
         },
         showEqualizer(state) {
             return state.showEqualizer;

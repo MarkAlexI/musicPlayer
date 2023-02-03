@@ -9,6 +9,7 @@
   import { useStore } from 'vuex';
   
   const masterGain = ref(null);
+  const stereoPanner = ref(null);
 
   const store = useStore();
   const changeMasterGain = (value: number) => {
@@ -24,6 +25,10 @@
   
   const getVolume = () => {
     return store.getters.volume;
+  };
+  
+  const getBalance = () => {
+    return store.getters.balance;
   };
   
   const player = getPlayer();
@@ -42,7 +47,10 @@
       const pxlBetweenBars = 2;
 
       source.connect(masterGain.value);
-      masterGain.value.connect(analyser);
+      
+      stereoPanner.value = audio.createStereoPanner();
+      masterGain.value.connect(stereoPanner.value);
+      stereoPanner.value.connect(analyser);
       analyser.connect(audio.destination);
       
       analyser.fftSize = 128;
@@ -76,6 +84,10 @@
         if (mutation.type === 'refreshVolume') {
           changeMasterGain(getVolume());
         }
+        
+        if (mutation.type === 'refreshBalance') {
+          stereoPanner.value.pan.value = getBalance();
+        }
       });
     } else alert('Your browser does not support Web Audio');
   });
@@ -108,6 +120,7 @@
     width: 100%;
     height: 25% !important;
     border: 1px solid;
+    border-radius: .25rem;
     margin-left: auto;
     margin-right: auto;
   }

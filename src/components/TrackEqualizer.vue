@@ -11,10 +11,25 @@
               min="0"
               max="10"
               v-model="volumeLevel"
-              @change="updateVolume(volumeLevel)"
+              @input="updateVolume(volumeLevel)"
             />
             <output>
               {{ volumeLevel }}&nbsp;&nbsp;&nbsp;&nbsp;
+            </output>
+          </div>
+          
+          <div class="controls">
+            <label>Balance</label>
+            <input
+              type="range"
+              step="0.1"
+              min="-1"
+              max="1"
+              v-model="balance"
+              @change="updateBalance(balance)"
+            />
+            <output>
+              {{ balance }}&nbsp;&nbsp;&nbsp;&nbsp;
             </output>
           </div>
         </form>
@@ -29,6 +44,7 @@
 
   const hidden = ref(false);
   const volumeLevel = ref(10);
+  const balance = ref(0);
   
   const store = useStore();
 
@@ -39,6 +55,10 @@
   const updateVolume = (newVolumeLevel: string): void => {
     store.commit('refreshVolume', parseFloat(newVolumeLevel));
   }
+  
+  const updateBalance = (newBalance: string): void => {
+    store.commit('refreshBalance', parseFloat(newBalance));
+  };
 
   store.subscribe((mutation, state) => {
     if (mutation.type === 'refreshShowEqualizer') {

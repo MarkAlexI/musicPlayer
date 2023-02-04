@@ -18284,6 +18284,23 @@ exports["default"] = (0, vue_1.defineComponent)({
     __name: 'TracksInput',
     setup(__props, { expose }) {
         expose();
+        const dropbox = (0, vue_2.ref)(null);
+        const stopEvent = (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+        };
+        const dragenter = (event) => {
+            stopEvent(event);
+        };
+        const dragover = (event) => {
+            stopEvent(event);
+        };
+        function drop(event) {
+            stopEvent(event);
+            const dt = event.dataTransfer;
+            const files = dt.files;
+            updateStore(files);
+        }
         const store = (0, vuex_1.useStore)();
         const updateStore = (newTracks) => {
             store.commit('refreshTrackList', newTracks);
@@ -18298,7 +18315,12 @@ exports["default"] = (0, vue_1.defineComponent)({
                 updateStore(target.files);
             }
         });
-        const __returned__ = { store, updateStore, input, fileSelect, handleFileUpload, ShowEqualizer: ShowEqualizer_vue_1.default };
+        (0, vue_2.onMounted)(() => {
+            dropbox.value.addEventListener("dragenter", dragenter, false);
+            dropbox.value.addEventListener("dragover", dragover, false);
+            dropbox.value.addEventListener("drop", drop, false);
+        });
+        const __returned__ = { dropbox, stopEvent, dragenter, dragover, drop, store, updateStore, input, fileSelect, handleFileUpload, ShowEqualizer: ShowEqualizer_vue_1.default };
         Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true });
         return __returned__;
     }
@@ -18563,7 +18585,10 @@ exports.render = render;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.render = void 0;
 const vue_1 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
-const _hoisted_1 = { class: "row card-panel" };
+const _hoisted_1 = {
+    ref: "dropbox",
+    class: "row card-panel"
+};
 const _hoisted_2 = { class: "col s5" };
 const _hoisted_3 = (0, vue_1.createElementVNode)("i", { class: "material-icons right" }, "eject", -1);
 function render(_ctx, _cache, $props, $setup, $data, $options) {
@@ -18588,7 +18613,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
             ], 512)
         ]),
         (0, vue_1.createVNode)($setup["ShowEqualizer"])
-    ]));
+    ], 512));
 }
 exports.render = render;
 

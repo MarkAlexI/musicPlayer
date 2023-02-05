@@ -31,6 +31,10 @@
     return store.getters.balance;
   };
   
+  const getGainSixtyHz = () => {
+    return store.getters.gainSixtyHz;
+  };
+  
   const player = getPlayer();
   player.addEventListener('play', (event: Event) => {
     audio.resume();
@@ -87,6 +91,10 @@
         
         if (mutation.type === 'refreshBalance') {
           stereoPanner.value.pan.value = getBalance();
+        }
+        
+        if (mutation.type === 'refreshGainSixtyHz') {
+          console.log(getGainSixtyHz());
         }
       });
     } else alert('Your browser does not support Web Audio');

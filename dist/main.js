@@ -18103,6 +18103,7 @@ exports["default"] = (0, vue_1.defineComponent)({
         const hidden = (0, vue_2.ref)(false);
         const volumeLevel = (0, vue_2.ref)(10);
         const balance = (0, vue_2.ref)(0);
+        const gainSixtyHz = (0, vue_2.ref)(0);
         const store = (0, vuex_1.useStore)();
         const getShowEqualizer = () => {
             return store.getters.showEqualizer;
@@ -18113,12 +18114,15 @@ exports["default"] = (0, vue_1.defineComponent)({
         const updateBalance = (newBalance) => {
             store.commit('refreshBalance', parseFloat(newBalance));
         };
+        const updateGainSixtyHz = (newGain) => {
+            store.commit('refreshGainSixtyHz', gainSixtyHz);
+        };
         store.subscribe((mutation, state) => {
             if (mutation.type === 'refreshShowEqualizer') {
                 hidden.value = getShowEqualizer();
             }
         });
-        const __returned__ = { hidden, volumeLevel, balance, store, getShowEqualizer, updateVolume, updateBalance };
+        const __returned__ = { hidden, volumeLevel, balance, gainSixtyHz, store, getShowEqualizer, updateVolume, updateBalance, updateGainSixtyHz };
         Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true });
         return __returned__;
     }
@@ -18198,6 +18202,9 @@ exports["default"] = (0, vue_1.defineComponent)({
         const getBalance = () => {
             return store.getters.balance;
         };
+        const getGainSixtyHz = () => {
+            return store.getters.gainSixtyHz;
+        };
         const player = getPlayer();
         player.addEventListener('play', (event) => {
             audio.resume();
@@ -18244,12 +18251,15 @@ exports["default"] = (0, vue_1.defineComponent)({
                     if (mutation.type === 'refreshBalance') {
                         stereoPanner.value.pan.value = getBalance();
                     }
+                    if (mutation.type === 'refreshGainSixtyHz') {
+                        console.log(getGainSixtyHz());
+                    }
                 });
             }
             else
                 alert('Your browser does not support Web Audio');
         });
-        const __returned__ = { masterGain, stereoPanner, store, changeMasterGain, canvas, audio, getPlayer, getVolume, getBalance, player };
+        const __returned__ = { masterGain, stereoPanner, store, changeMasterGain, canvas, audio, getPlayer, getVolume, getBalance, getGainSixtyHz, player };
         Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true });
         return __returned__;
     }
@@ -18473,6 +18483,8 @@ const _hoisted_3 = { class: "controls" };
 const _hoisted_4 = (0, vue_1.createElementVNode)("label", null, "Master volume", -1);
 const _hoisted_5 = { class: "controls" };
 const _hoisted_6 = (0, vue_1.createElementVNode)("label", null, "Balance", -1);
+const _hoisted_7 = { class: "controls" };
+const _hoisted_8 = (0, vue_1.createElementVNode)("label", null, "60Hz", -1);
 function render(_ctx, _cache, $props, $setup, $data, $options) {
     return ((0, vue_1.openBlock)(), (0, vue_1.createElementBlock)("div", {
         class: (0, vue_1.normalizeClass)({ 'card-panel': true, 'hidden': !$setup.hidden })
@@ -18507,6 +18519,20 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                             [vue_1.vModelText, $setup.balance]
                         ]),
                         (0, vue_1.createElementVNode)("output", null, (0, vue_1.toDisplayString)($setup.balance) + "     ", 1)
+                    ]),
+                    (0, vue_1.createElementVNode)("div", _hoisted_7, [
+                        _hoisted_8,
+                        (0, vue_1.withDirectives)((0, vue_1.createElementVNode)("input", {
+                            type: "range",
+                            step: "1",
+                            min: "-30",
+                            max: "30",
+                            "onUpdate:modelValue": _cache[4] || (_cache[4] = ($event) => (($setup.gainSixtyHz) = $event)),
+                            onInput: _cache[5] || (_cache[5] = ($event) => ($setup.updateGainSixtyHz($setup.gainSixtyHz)))
+                        }, null, 544), [
+                            [vue_1.vModelText, $setup.gainSixtyHz]
+                        ]),
+                        (0, vue_1.createElementVNode)("output", null, (0, vue_1.toDisplayString)($setup.gainSixtyHz) + " dB ", 1)
                     ])
                 ])
             ])
@@ -21103,6 +21129,7 @@ const store = (0, vuex_1.createStore)({
             player: null,
             volume: null,
             balance: 0,
+            gainSixtyHz: 0,
             showEqualizer: false,
             trackList: [],
             trackListInfo: [],
@@ -21118,6 +21145,9 @@ const store = (0, vuex_1.createStore)({
         },
         refreshBalance(state, newValue) {
             state.balance = newValue;
+        },
+        refreshGainSixtyHz(state, newValue) {
+            state.gainSixtyHz = newValue;
         },
         refreshShowEqualizer(state) {
             state.showEqualizer = !state.showEqualizer;
@@ -21151,6 +21181,9 @@ const store = (0, vuex_1.createStore)({
         },
         balance(state) {
             return state.balance;
+        },
+        gainSixtyHz(state) {
+            return state.gainSixtyHz;
         },
         showEqualizer(state) {
             return state.showEqualizer;

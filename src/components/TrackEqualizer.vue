@@ -32,6 +32,21 @@
               {{ balance }}&nbsp;&nbsp;&nbsp;&nbsp;
             </output>
           </div>
+          
+          <div class="controls">
+            <label>60Hz</label>
+            <input
+              type="range"
+              step="1"
+              min="-30"
+              max="30"
+              v-model="gainSixtyHz"
+              @input="updateGainSixtyHz(gainSixtyHz)"
+            />
+            <output>
+              {{ gainSixtyHz }} dB
+            </output>
+          </div>
         </form>
       </div>
     </div>
@@ -46,6 +61,8 @@
   const volumeLevel = ref(10);
   const balance = ref(0);
   
+  const gainSixtyHz = ref(0);
+  
   const store = useStore();
 
   const getShowEqualizer = () => {
@@ -58,6 +75,10 @@
   
   const updateBalance = (newBalance: string): void => {
     store.commit('refreshBalance', parseFloat(newBalance));
+  };
+  
+  const updateGainSixtyHz = (newGain: string): void => {
+    store.commit('refreshGainSixtyHz', gainSixtyHz);
   };
 
   store.subscribe((mutation, state) => {

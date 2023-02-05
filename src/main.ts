@@ -11,6 +11,7 @@ const store = createStore({
       player: null,
       volume: null,
       balance: 0,
+      gainSixtyHz: 0,
       showEqualizer: false,
       trackList: [],
       trackListInfo: [],
@@ -26,6 +27,9 @@ const store = createStore({
     },
     refreshBalance(state, newValue) {
       state.balance = newValue;
+    },
+    refreshGainSixtyHz(state, newValue) {
+      state.gainSixtyHz = newValue;
     },
     refreshShowEqualizer(state) {
       state.showEqualizer = !state.showEqualizer;
@@ -60,6 +64,9 @@ const store = createStore({
     },
     balance(state) {
       return state.balance;
+    },
+    gainSixtyHz(state) {
+      return state.gainSixtyHz;
     },
     showEqualizer(state) {
       return state.showEqualizer;

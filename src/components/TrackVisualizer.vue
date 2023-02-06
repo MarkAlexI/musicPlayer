@@ -10,6 +10,7 @@
   
   const masterGain = ref(null);
   const stereoPanner = ref(null);
+  const filters = ref([]);
 
   const store = useStore();
   const changeMasterGain = (value: number) => {
@@ -42,15 +43,25 @@
 
   onMounted(() => {
     if (window.AudioContext || window.webkitAudioContext) {
-
-      const source = audio.createMediaElementSource(player);
-      const analyser = audio.createAnalyser();
-      masterGain.value = audio.createGain();
-      masterGain.value.gain.value = 1;
       const ctx = canvas.value.getContext('2d');
       const pxlBetweenBars = 2;
 
-      source.connect(masterGain.value);
+      const source = audio.createMediaElementSource(player);
+      const analyser = audio.createAnalyser();
+      
+      [60].forEach(function(freq, i) {
+        const eq = audio.createBiquadFilter();
+        eq.frequency.value = freq;
+        eq.type = "peaking";
+        eq.gain.value = 0;
+        filters.value.push(eq);
+      });
+      
+      masterGain.value = audio.createGain();
+      masterGain.value.gain.value = 1;
+
+      source.connect(filters.value[0]);
+      filters.value[0].connect(masterGain.value);
       
       stereoPanner.value = audio.createStereoPanner();
       masterGain.value.connect(stereoPanner.value);
@@ -94,6 +105,7 @@
         }
         
         if (mutation.type === 'refreshGainSixtyHz') {
+          filters.value[0].gain.value = getGainSixtyHz();
           console.log(getGainSixtyHz());
         }
       });

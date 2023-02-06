@@ -18187,6 +18187,7 @@ exports["default"] = (0, vue_1.defineComponent)({
         expose();
         const masterGain = (0, vue_2.ref)(null);
         const stereoPanner = (0, vue_2.ref)(null);
+        const filters = (0, vue_2.ref)([]);
         const store = (0, vuex_1.useStore)();
         const changeMasterGain = (value) => {
             masterGain.value.gain.value = value / 10;
@@ -18211,13 +18212,21 @@ exports["default"] = (0, vue_1.defineComponent)({
         });
         (0, vue_2.onMounted)(() => {
             if (window.AudioContext || window.webkitAudioContext) {
-                const source = audio.createMediaElementSource(player);
-                const analyser = audio.createAnalyser();
-                masterGain.value = audio.createGain();
-                masterGain.value.gain.value = 1;
                 const ctx = canvas.value.getContext('2d');
                 const pxlBetweenBars = 2;
-                source.connect(masterGain.value);
+                const source = audio.createMediaElementSource(player);
+                const analyser = audio.createAnalyser();
+                [60].forEach(function (freq, i) {
+                    const eq = audio.createBiquadFilter();
+                    eq.frequency.value = freq;
+                    eq.type = "peaking";
+                    eq.gain.value = 0;
+                    filters.value.push(eq);
+                });
+                masterGain.value = audio.createGain();
+                masterGain.value.gain.value = 1;
+                source.connect(filters.value[0]);
+                filters.value[0].connect(masterGain.value);
                 stereoPanner.value = audio.createStereoPanner();
                 masterGain.value.connect(stereoPanner.value);
                 stereoPanner.value.connect(analyser);
@@ -18252,6 +18261,7 @@ exports["default"] = (0, vue_1.defineComponent)({
                         stereoPanner.value.pan.value = getBalance();
                     }
                     if (mutation.type === 'refreshGainSixtyHz') {
+                        filters.value[0].gain.value = getGainSixtyHz();
                         console.log(getGainSixtyHz());
                     }
                 });
@@ -18259,7 +18269,7 @@ exports["default"] = (0, vue_1.defineComponent)({
             else
                 alert('Your browser does not support Web Audio');
         });
-        const __returned__ = { masterGain, stereoPanner, store, changeMasterGain, canvas, audio, getPlayer, getVolume, getBalance, getGainSixtyHz, player };
+        const __returned__ = { masterGain, stereoPanner, filters, store, changeMasterGain, canvas, audio, getPlayer, getVolume, getBalance, getGainSixtyHz, player };
         Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true });
         return __returned__;
     }

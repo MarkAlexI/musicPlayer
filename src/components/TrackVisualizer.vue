@@ -42,7 +42,7 @@
   });
 
   onMounted(() => {
-    if (window.AudioContext || window.webkitAudioContext) {
+    if (window.AudioContext) {
       const ctx = canvas.value.getContext('2d');
       const pxlBetweenBars = 2;
 

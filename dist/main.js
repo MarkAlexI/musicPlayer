@@ -18069,7 +18069,6 @@ exports["default"] = (0, vue_1.defineComponent)({
         expose();
         const store = (0, vuex_1.useStore)();
         const getShowEqualizer = () => {
-            console.log('fromSwitch');
             return store.getters.showEqualizer;
         };
         const updateShowEqualizer = () => {
@@ -18211,7 +18210,7 @@ exports["default"] = (0, vue_1.defineComponent)({
             audio.resume();
         });
         (0, vue_2.onMounted)(() => {
-            if (window.AudioContext || window.webkitAudioContext) {
+            if (window.AudioContext) {
                 const ctx = canvas.value.getContext('2d');
                 const pxlBetweenBars = 2;
                 const source = audio.createMediaElementSource(player);
@@ -18652,6 +18651,145 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     ], 512));
 }
 exports.render = render;
+
+
+/***/ }),
+
+/***/ "./store/getters.ts":
+/*!**************************!*\
+  !*** ./store/getters.ts ***!
+  \**************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.currentTrack = exports.trackListInfo = exports.track = exports.trackListLength = exports.showEqualizer = exports.gainSixtyHz = exports.balance = exports.volume = exports.player = void 0;
+const player = (state) => {
+    return state.player;
+};
+exports.player = player;
+const volume = (state) => {
+    return state.volume;
+};
+exports.volume = volume;
+const balance = (state) => {
+    return state.balance;
+};
+exports.balance = balance;
+const gainSixtyHz = (state) => {
+    return state.gainSixtyHz;
+};
+exports.gainSixtyHz = gainSixtyHz;
+const showEqualizer = (state) => {
+    return state.showEqualizer;
+};
+exports.showEqualizer = showEqualizer;
+const trackListLength = (state) => {
+    return state.trackList.length;
+};
+exports.trackListLength = trackListLength;
+const track = (state) => (index) => {
+    return state.trackList[index];
+};
+exports.track = track;
+const trackListInfo = (state) => {
+    return state.trackListInfo;
+};
+exports.trackListInfo = trackListInfo;
+const currentTrack = (state) => {
+    return state.currentTrack;
+};
+exports.currentTrack = currentTrack;
+
+
+/***/ }),
+
+/***/ "./store/index.ts":
+/*!************************!*\
+  !*** ./store/index.ts ***!
+  \************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const vuex_1 = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm-bundler.js");
+const mutations = __webpack_require__(/*! ./mutations */ "./store/mutations.ts");
+const getters = __webpack_require__(/*! ./getters */ "./store/getters.ts");
+const state = {
+    player: null,
+    volume: null,
+    balance: 0,
+    gainSixtyHz: 0,
+    showEqualizer: false,
+    trackList: [],
+    trackListInfo: [],
+    currentTrack: 0
+};
+const store = (0, vuex_1.createStore)({
+    state,
+    mutations,
+    getters
+});
+if (false) {}
+exports["default"] = store;
+
+
+/***/ }),
+
+/***/ "./store/mutations.ts":
+/*!****************************!*\
+  !*** ./store/mutations.ts ***!
+  \****************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.refreshCurrentTrack = exports.refreshTrackListInfo = exports.refreshTrackList = exports.refreshShowEqualizer = exports.refreshGainSixtyHz = exports.refreshBalance = exports.refreshVolume = exports.refreshPlayer = void 0;
+const refreshPlayer = (state, newValue) => {
+    state.player = newValue;
+};
+exports.refreshPlayer = refreshPlayer;
+const refreshVolume = (state, newValue) => {
+    state.volume = newValue;
+};
+exports.refreshVolume = refreshVolume;
+const refreshBalance = (state, newValue) => {
+    state.balance = newValue;
+};
+exports.refreshBalance = refreshBalance;
+const refreshGainSixtyHz = (state, newValue) => {
+    state.gainSixtyHz = newValue;
+};
+exports.refreshGainSixtyHz = refreshGainSixtyHz;
+const refreshShowEqualizer = (state) => {
+    state.showEqualizer = !state.showEqualizer;
+};
+exports.refreshShowEqualizer = refreshShowEqualizer;
+const refreshTrackList = (state, newValue) => {
+    state.trackList = newValue;
+};
+exports.refreshTrackList = refreshTrackList;
+const refreshTrackListInfo = (state) => {
+    let tracksInfo = [];
+    const len = state.trackList.length;
+    const files = state.trackList;
+    for (let i = 0; i < len; i++) {
+        tracksInfo.push({
+            name: files[i].name,
+            size: files[i].size,
+            index: i
+        });
+    }
+    state.trackListInfo = tracksInfo;
+};
+exports.refreshTrackListInfo = refreshTrackListInfo;
+const refreshCurrentTrack = (state, newValue) => {
+    state.currentTrack = newValue;
+};
+exports.refreshCurrentTrack = refreshCurrentTrack;
 
 
 /***/ }),
@@ -21130,90 +21268,11 @@ var exports = __webpack_exports__;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const vue_1 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 const App_vue_1 = __webpack_require__(/*! ./App.vue */ "./src/App.vue");
-const vuex_1 = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm-bundler.js");
+const store_1 = __webpack_require__(/*! ../store */ "./store/index.ts");
 __webpack_require__(/*! materialize-css/dist/css/materialize.min.css */ "./node_modules/materialize-css/dist/css/materialize.min.css");
 __webpack_require__(/*! material-design-icons/iconfont/material-icons.css */ "./node_modules/material-design-icons/iconfont/material-icons.css");
-const store = (0, vuex_1.createStore)({
-    state() {
-        return {
-            player: null,
-            volume: null,
-            balance: 0,
-            gainSixtyHz: 0,
-            showEqualizer: false,
-            trackList: [],
-            trackListInfo: [],
-            currentTrack: 0
-        };
-    },
-    mutations: {
-        refreshPlayer(state, newValue) {
-            state.player = newValue;
-        },
-        refreshVolume(state, newValue) {
-            state.volume = newValue;
-        },
-        refreshBalance(state, newValue) {
-            state.balance = newValue;
-        },
-        refreshGainSixtyHz(state, newValue) {
-            state.gainSixtyHz = newValue;
-        },
-        refreshShowEqualizer(state) {
-            state.showEqualizer = !state.showEqualizer;
-        },
-        refreshTrackList(state, newValue) {
-            state.trackList = newValue;
-        },
-        refreshTrackListInfo(state) {
-            let tracksInfo = [];
-            const len = state.trackList.length;
-            const files = state.trackList;
-            for (let i = 0; i < len; i++) {
-                tracksInfo.push({
-                    name: files[i].name,
-                    size: files[i].size,
-                    index: i
-                });
-            }
-            state.trackListInfo = tracksInfo;
-        },
-        refreshCurrentTrack(state, newValue) {
-            state.currentTrack = newValue;
-        }
-    },
-    getters: {
-        player(state) {
-            return state.player;
-        },
-        volume(state) {
-            return state.volume;
-        },
-        balance(state) {
-            return state.balance;
-        },
-        gainSixtyHz(state) {
-            return state.gainSixtyHz;
-        },
-        showEqualizer(state) {
-            return state.showEqualizer;
-        },
-        trackListLength(state) {
-            return state.trackList.length;
-        },
-        track: (state) => (index) => {
-            return state.trackList[index];
-        },
-        trackListInfo(state) {
-            return state.trackListInfo;
-        },
-        currentTrack(state) {
-            return state.currentTrack;
-        }
-    }
-});
 const app = (0, vue_1.createApp)(App_vue_1.default);
-app.use(store);
+app.use(store_1.default);
 app.mount("#app");
 
 })();

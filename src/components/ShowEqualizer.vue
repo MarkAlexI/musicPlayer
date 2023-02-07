@@ -20,8 +20,7 @@
 
   const store = useStore();
 
-  const getShowEqualizer = () => {
-    console.log('fromSwitch');
+  const getShowEqualizer = (): boolean => {
     return store.getters.showEqualizer;
   };
 

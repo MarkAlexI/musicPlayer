@@ -42,7 +42,7 @@
 
   const store = useStore();
 
-  const updateStore = (newTracks: Tracks) => {
+  const updateStore = (newTracks: Tracks): void => {
     store.commit('refreshTrackList', newTracks);
     store.commit('refreshTrackListInfo');
     console.log(store.getters.trackListInfo);

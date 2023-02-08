@@ -18715,8 +18715,11 @@ exports.currentTrack = currentTrack;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const vuex_1 = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm-bundler.js");
+const vuex_2 = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm-bundler.js");
 const mutations = __webpack_require__(/*! ./mutations */ "./store/mutations.ts");
 const getters = __webpack_require__(/*! ./getters */ "./store/getters.ts");
+const debug = "development" !== 'production';
+const plugins = debug ? [(0, vuex_2.createLogger)({})] : [];
 const state = {
     player: null,
     volume: null,
@@ -18730,7 +18733,9 @@ const state = {
 const store = (0, vuex_1.createStore)({
     state,
     mutations,
-    getters
+    getters,
+    plugins,
+    strict: true
 });
 if (false) {}
 exports["default"] = store;

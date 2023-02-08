@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = (env = {}) => ({
-  mode: env.prod ? "production" : "development",
+  mode: env.prod ? 'production' : 'development',
   entry: [
     path.resolve(__dirname, "./src/main.ts")
   ].filter(Boolean),
@@ -57,7 +57,7 @@ module.exports = (env = {}) => ({
   plugins: [
     new webpack.DefinePlugin({
       __VUE_OPTIONS_API__: false,
-      __VUE_PROD_DEVTOOLS__: false,
+      __VUE_PROD_DEVTOOLS__: false
     }),
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({

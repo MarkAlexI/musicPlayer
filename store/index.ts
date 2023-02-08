@@ -1,6 +1,10 @@
 import { createStore } from 'vuex';
+import { createLogger } from 'vuex';
 import * as mutations from './mutations';
 import * as getters from './getters';
+
+const debug = process.env.NODE_ENV !== 'production';
+const plugins = debug ? [createLogger({})] : [];
 
 const state: State = {
   player: null,
@@ -16,7 +20,9 @@ const state: State = {
 const store = createStore({
   state,
   mutations,
-  getters
+  getters,
+  plugins,
+  strict: true
 });
 
 if (module.hot) {

@@ -26,7 +26,7 @@
 
   const updateShowEqualizer = (): void => {
     store.commit('refreshShowEqualizer');
-  }
+  };
 </script>
 
 <style>

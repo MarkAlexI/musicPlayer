@@ -10,7 +10,7 @@ const state: State = {
   player: null,
   volume: null,
   balance: 0,
-  gainSixtyHz: 0,
+  gains: [0, 0, 0, 0, 0, 0],
   showEqualizer: false,
   trackList: [],
   trackListInfo: [],

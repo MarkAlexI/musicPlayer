@@ -1,12 +1,12 @@
 {
   "name": "musicPlayer",
   "description": "Audio player for site on JavaScript.",
-  "version": "1.2.1",
+  "version": "1.3.1",
   "main": "main.js",
   "scripts": {
     "install-dep": "npm i",
     "build": "webpack",
-    "build-prod": "npx webpack --mode production",
+    "build-prod": "webpack --mode production",
     "start": "webpack serve --hot --mode development"
   },
   "repository": {

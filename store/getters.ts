@@ -10,8 +10,8 @@ export const balance = (state: State): number => {
   return state.balance;
 };
 
-export const gainSixtyHz = (state: State): number => {
-  return state.gainSixtyHz;
+export const gain = (state: State) => (index: number): number => {
+  return state.gains[index];
 };
 
 export const showEqualizer = (state: State): boolean => {

@@ -32,8 +32,8 @@
     return store.getters.balance;
   };
   
-  const getGainSixtyHz = () => {
-    return store.getters.gainSixtyHz;
+  const getGain = (index: number) => {
+    return store.getters.gain(index);
   };
   
   const player = getPlayer();
@@ -49,7 +49,7 @@
       const source = audio.createMediaElementSource(player);
       const analyser = audio.createAnalyser();
       
-      [60].forEach(function(freq, i) {
+      [60, 170, 350, 1000, 3500, 10000].forEach(function(freq, i) {
         const eq = audio.createBiquadFilter();
         eq.frequency.value = freq;
         eq.type = "peaking";
@@ -61,7 +61,12 @@
       masterGain.value.gain.value = 1;
 
       source.connect(filters.value[0]);
-      filters.value[0].connect(masterGain.value);
+      
+      for (let i = 0; i < filters.value.length - 1; i++) {
+        filters.value[i].connect(filters.value[i + 1]);
+      }
+      
+      filters.value[filters.value.length - 1].connect(masterGain.value);
       
       stereoPanner.value = audio.createStereoPanner();
       masterGain.value.connect(stereoPanner.value);
@@ -104,9 +109,9 @@
           stereoPanner.value.pan.value = getBalance();
         }
         
-        if (mutation.type === 'refreshGainSixtyHz') {
-          filters.value[0].gain.value = getGainSixtyHz();
-          console.log(getGainSixtyHz());
+        if (mutation.type === 'refreshGain') {
+          const { newValue, index } = mutation.payload;
+          filters.value[index].gain.value = newValue;
         }
       });
     } else alert('Your browser does not support Web Audio');

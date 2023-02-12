@@ -10,8 +10,9 @@ export const refreshBalance = (state: State, newValue: number): void => {
   state.balance = newValue;
 };
 
-export const refreshGainSixtyHz = (state: State, newValue: number): void => {
-  state.gainSixtyHz = newValue;
+export const refreshGain = (state: State, newGainValue: NewGain): void => {
+  const { newValue, index } = newGainValue;
+  state.gains[index] = newValue;
 };
 
 export const refreshShowEqualizer = (state: State): void => {

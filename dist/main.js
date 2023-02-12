@@ -18102,7 +18102,7 @@ exports["default"] = (0, vue_1.defineComponent)({
         const hidden = (0, vue_2.ref)(false);
         const volumeLevel = (0, vue_2.ref)(10);
         const balance = (0, vue_2.ref)(0);
-        const gainSixtyHz = (0, vue_2.ref)(0);
+        const gains = (0, vue_2.ref)(['0', '0', '0', '0', '0', '0']);
         const store = (0, vuex_1.useStore)();
         const getShowEqualizer = () => {
             return store.getters.showEqualizer;
@@ -18113,15 +18113,15 @@ exports["default"] = (0, vue_1.defineComponent)({
         const updateBalance = (newBalance) => {
             store.commit('refreshBalance', parseFloat(newBalance));
         };
-        const updateGainSixtyHz = (newGain) => {
-            store.commit('refreshGainSixtyHz', gainSixtyHz);
+        const updateGains = (index) => {
+            store.commit('refreshGain', { 'newValue': parseFloat(gains.value[index]), 'index': index });
         };
         store.subscribe((mutation, state) => {
             if (mutation.type === 'refreshShowEqualizer') {
                 hidden.value = getShowEqualizer();
             }
         });
-        const __returned__ = { hidden, volumeLevel, balance, gainSixtyHz, store, getShowEqualizer, updateVolume, updateBalance, updateGainSixtyHz };
+        const __returned__ = { hidden, volumeLevel, balance, gains, store, getShowEqualizer, updateVolume, updateBalance, updateGains };
         Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true });
         return __returned__;
     }
@@ -18202,8 +18202,8 @@ exports["default"] = (0, vue_1.defineComponent)({
         const getBalance = () => {
             return store.getters.balance;
         };
-        const getGainSixtyHz = () => {
-            return store.getters.gainSixtyHz;
+        const getGain = (index) => {
+            return store.getters.gain(index);
         };
         const player = getPlayer();
         player.addEventListener('play', (event) => {
@@ -18215,7 +18215,7 @@ exports["default"] = (0, vue_1.defineComponent)({
                 const pxlBetweenBars = 2;
                 const source = audio.createMediaElementSource(player);
                 const analyser = audio.createAnalyser();
-                [60].forEach(function (freq, i) {
+                [60, 170, 350, 1000, 3500, 10000].forEach(function (freq, i) {
                     const eq = audio.createBiquadFilter();
                     eq.frequency.value = freq;
                     eq.type = "peaking";
@@ -18225,7 +18225,10 @@ exports["default"] = (0, vue_1.defineComponent)({
                 masterGain.value = audio.createGain();
                 masterGain.value.gain.value = 1;
                 source.connect(filters.value[0]);
-                filters.value[0].connect(masterGain.value);
+                for (let i = 0; i < filters.value.length - 1; i++) {
+                    filters.value[i].connect(filters.value[i + 1]);
+                }
+                filters.value[filters.value.length - 1].connect(masterGain.value);
                 stereoPanner.value = audio.createStereoPanner();
                 masterGain.value.connect(stereoPanner.value);
                 stereoPanner.value.connect(analyser);
@@ -18259,16 +18262,16 @@ exports["default"] = (0, vue_1.defineComponent)({
                     if (mutation.type === 'refreshBalance') {
                         stereoPanner.value.pan.value = getBalance();
                     }
-                    if (mutation.type === 'refreshGainSixtyHz') {
-                        filters.value[0].gain.value = getGainSixtyHz();
-                        console.log(getGainSixtyHz());
+                    if (mutation.type === 'refreshGain') {
+                        const { newValue, index } = mutation.payload;
+                        filters.value[index].gain.value = newValue;
                     }
                 });
             }
             else
                 alert('Your browser does not support Web Audio');
         });
-        const __returned__ = { masterGain, stereoPanner, filters, store, changeMasterGain, canvas, audio, getPlayer, getVolume, getBalance, getGainSixtyHz, player };
+        const __returned__ = { masterGain, stereoPanner, filters, store, changeMasterGain, canvas, audio, getPlayer, getVolume, getBalance, getGain, player };
         Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true });
         return __returned__;
     }
@@ -18494,6 +18497,16 @@ const _hoisted_5 = { class: "controls" };
 const _hoisted_6 = (0, vue_1.createElementVNode)("label", null, "Balance", -1);
 const _hoisted_7 = { class: "controls" };
 const _hoisted_8 = (0, vue_1.createElementVNode)("label", null, "60Hz", -1);
+const _hoisted_9 = { class: "controls" };
+const _hoisted_10 = (0, vue_1.createElementVNode)("label", null, "170Hz", -1);
+const _hoisted_11 = { class: "controls" };
+const _hoisted_12 = (0, vue_1.createElementVNode)("label", null, "350Hz", -1);
+const _hoisted_13 = { class: "controls" };
+const _hoisted_14 = (0, vue_1.createElementVNode)("label", null, "1000Hz", -1);
+const _hoisted_15 = { class: "controls" };
+const _hoisted_16 = (0, vue_1.createElementVNode)("label", null, "3500Hz", -1);
+const _hoisted_17 = { class: "controls" };
+const _hoisted_18 = (0, vue_1.createElementVNode)("label", null, "10000Hz", -1);
 function render(_ctx, _cache, $props, $setup, $data, $options) {
     return ((0, vue_1.openBlock)(), (0, vue_1.createElementBlock)("div", {
         class: (0, vue_1.normalizeClass)({ 'card-panel': true, 'hidden': !$setup.hidden })
@@ -18536,12 +18549,82 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                             step: "1",
                             min: "-30",
                             max: "30",
-                            "onUpdate:modelValue": _cache[4] || (_cache[4] = ($event) => (($setup.gainSixtyHz) = $event)),
-                            onInput: _cache[5] || (_cache[5] = ($event) => ($setup.updateGainSixtyHz($setup.gainSixtyHz)))
+                            "onUpdate:modelValue": _cache[4] || (_cache[4] = ($event) => (($setup.gains[0]) = $event)),
+                            onInput: _cache[5] || (_cache[5] = ($event) => ($setup.updateGains(0)))
                         }, null, 544), [
-                            [vue_1.vModelText, $setup.gainSixtyHz]
+                            [vue_1.vModelText, $setup.gains[0]]
                         ]),
-                        (0, vue_1.createElementVNode)("output", null, (0, vue_1.toDisplayString)($setup.gainSixtyHz) + " dB ", 1)
+                        (0, vue_1.createElementVNode)("output", null, (0, vue_1.toDisplayString)($setup.gains[0]) + " dB ", 1)
+                    ]),
+                    (0, vue_1.createElementVNode)("div", _hoisted_9, [
+                        _hoisted_10,
+                        (0, vue_1.withDirectives)((0, vue_1.createElementVNode)("input", {
+                            type: "range",
+                            step: "1",
+                            min: "-30",
+                            max: "30",
+                            "onUpdate:modelValue": _cache[6] || (_cache[6] = ($event) => (($setup.gains[1]) = $event)),
+                            onInput: _cache[7] || (_cache[7] = ($event) => ($setup.updateGains(1)))
+                        }, null, 544), [
+                            [vue_1.vModelText, $setup.gains[1]]
+                        ]),
+                        (0, vue_1.createElementVNode)("output", null, (0, vue_1.toDisplayString)($setup.gains[1]) + " dB ", 1)
+                    ]),
+                    (0, vue_1.createElementVNode)("div", _hoisted_11, [
+                        _hoisted_12,
+                        (0, vue_1.withDirectives)((0, vue_1.createElementVNode)("input", {
+                            type: "range",
+                            step: "1",
+                            min: "-30",
+                            max: "30",
+                            "onUpdate:modelValue": _cache[8] || (_cache[8] = ($event) => (($setup.gains[2]) = $event)),
+                            onInput: _cache[9] || (_cache[9] = ($event) => ($setup.updateGains(2)))
+                        }, null, 544), [
+                            [vue_1.vModelText, $setup.gains[2]]
+                        ]),
+                        (0, vue_1.createElementVNode)("output", null, (0, vue_1.toDisplayString)($setup.gains[2]) + " dB ", 1)
+                    ]),
+                    (0, vue_1.createElementVNode)("div", _hoisted_13, [
+                        _hoisted_14,
+                        (0, vue_1.withDirectives)((0, vue_1.createElementVNode)("input", {
+                            type: "range",
+                            step: "1",
+                            min: "-30",
+                            max: "30",
+                            "onUpdate:modelValue": _cache[10] || (_cache[10] = ($event) => (($setup.gains[3]) = $event)),
+                            onInput: _cache[11] || (_cache[11] = ($event) => ($setup.updateGains(3)))
+                        }, null, 544), [
+                            [vue_1.vModelText, $setup.gains[3]]
+                        ]),
+                        (0, vue_1.createElementVNode)("output", null, (0, vue_1.toDisplayString)($setup.gains[3]) + " dB ", 1)
+                    ]),
+                    (0, vue_1.createElementVNode)("div", _hoisted_15, [
+                        _hoisted_16,
+                        (0, vue_1.withDirectives)((0, vue_1.createElementVNode)("input", {
+                            type: "range",
+                            step: "1",
+                            min: "-30",
+                            max: "30",
+                            "onUpdate:modelValue": _cache[12] || (_cache[12] = ($event) => (($setup.gains[4]) = $event)),
+                            onInput: _cache[13] || (_cache[13] = ($event) => ($setup.updateGains(4)))
+                        }, null, 544), [
+                            [vue_1.vModelText, $setup.gains[4]]
+                        ]),
+                        (0, vue_1.createElementVNode)("output", null, (0, vue_1.toDisplayString)($setup.gains[4]) + " dB ", 1)
+                    ]),
+                    (0, vue_1.createElementVNode)("div", _hoisted_17, [
+                        _hoisted_18,
+                        (0, vue_1.withDirectives)((0, vue_1.createElementVNode)("input", {
+                            type: "range",
+                            step: "1",
+                            min: "-30",
+                            max: "30",
+                            "onUpdate:modelValue": _cache[14] || (_cache[14] = ($event) => (($setup.gains[5]) = $event)),
+                            onInput: _cache[15] || (_cache[15] = ($event) => ($setup.updateGains(5)))
+                        }, null, 544), [
+                            [vue_1.vModelText, $setup.gains[5]]
+                        ]),
+                        (0, vue_1.createElementVNode)("output", null, (0, vue_1.toDisplayString)($setup.gains[5]) + " dB ", 1)
                     ])
                 ])
             ])
@@ -18664,7 +18747,7 @@ exports.render = render;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.currentTrack = exports.trackListInfo = exports.track = exports.trackListLength = exports.showEqualizer = exports.gainSixtyHz = exports.balance = exports.volume = exports.player = void 0;
+exports.currentTrack = exports.trackListInfo = exports.track = exports.trackListLength = exports.showEqualizer = exports.gain = exports.balance = exports.volume = exports.player = void 0;
 const player = (state) => {
     return state.player;
 };
@@ -18677,10 +18760,10 @@ const balance = (state) => {
     return state.balance;
 };
 exports.balance = balance;
-const gainSixtyHz = (state) => {
-    return state.gainSixtyHz;
+const gain = (state) => (index) => {
+    return state.gains[index];
 };
-exports.gainSixtyHz = gainSixtyHz;
+exports.gain = gain;
 const showEqualizer = (state) => {
     return state.showEqualizer;
 };
@@ -18724,7 +18807,7 @@ const state = {
     player: null,
     volume: null,
     balance: 0,
-    gainSixtyHz: 0,
+    gains: [0, 0, 0, 0, 0, 0],
     showEqualizer: false,
     trackList: [],
     trackListInfo: [],
@@ -18752,7 +18835,7 @@ exports["default"] = store;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.refreshCurrentTrack = exports.refreshTrackListInfo = exports.refreshTrackList = exports.refreshShowEqualizer = exports.refreshGainSixtyHz = exports.refreshBalance = exports.refreshVolume = exports.refreshPlayer = void 0;
+exports.refreshCurrentTrack = exports.refreshTrackListInfo = exports.refreshTrackList = exports.refreshShowEqualizer = exports.refreshGain = exports.refreshBalance = exports.refreshVolume = exports.refreshPlayer = void 0;
 const refreshPlayer = (state, newValue) => {
     state.player = newValue;
 };
@@ -18765,10 +18848,11 @@ const refreshBalance = (state, newValue) => {
     state.balance = newValue;
 };
 exports.refreshBalance = refreshBalance;
-const refreshGainSixtyHz = (state, newValue) => {
-    state.gainSixtyHz = newValue;
+const refreshGain = (state, newGainValue) => {
+    const { newValue, index } = newGainValue;
+    state.gains[index] = newValue;
 };
-exports.refreshGainSixtyHz = refreshGainSixtyHz;
+exports.refreshGain = refreshGain;
 const refreshShowEqualizer = (state) => {
     state.showEqualizer = !state.showEqualizer;
 };

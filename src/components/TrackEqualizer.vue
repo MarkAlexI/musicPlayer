@@ -40,11 +40,86 @@
               step="1"
               min="-30"
               max="30"
-              v-model="gainSixtyHz"
-              @input="updateGainSixtyHz(gainSixtyHz)"
+              v-model="gains[0]"
+              @input="updateGains(0)"
             />
             <output>
-              {{ gainSixtyHz }} dB
+              {{ gains[0] }} dB
+            </output>
+          </div>
+          
+          <div class="controls">
+            <label>170Hz</label>
+            <input
+              type="range"
+              step="1"
+              min="-30"
+              max="30"
+              v-model="gains[1]"
+              @input="updateGains(1)"
+            />
+            <output>
+              {{ gains[1] }} dB
+            </output>
+          </div>
+          
+          <div class="controls">
+            <label>350Hz</label>
+            <input
+              type="range"
+              step="1"
+              min="-30"
+              max="30"
+              v-model="gains[2]"
+              @input="updateGains(2)"
+            />
+            <output>
+              {{ gains[2] }} dB
+            </output>
+          </div>
+          
+          <div class="controls">
+            <label>1000Hz</label>
+            <input
+              type="range"
+              step="1"
+              min="-30"
+              max="30"
+              v-model="gains[3]"
+              @input="updateGains(3)"
+            />
+            <output>
+              {{ gains[3] }} dB
+            </output>
+          </div>
+          
+          <div class="controls">
+            <label>3500Hz</label>
+            <input
+              type="range"
+              step="1"
+              min="-30"
+              max="30"
+              v-model="gains[4]"
+              @input="updateGains(4)"
+            />
+            <output>
+              {{ gains[4] }} dB
+            </output>
+          </div>
+          
+          <div class="controls">
+            <label>10000Hz</label>
+            <input
+              type="range"
+              step="1"
+              min="-30"
+              max="30"
+              v-model="gains[5]"
+              @input="updateGains(5)"
+            />
+            <output>
+              {{ gains[5] }} dB
             </output>
           </div>
         </form>
@@ -61,8 +136,7 @@
   const volumeLevel = ref(10);
   const balance = ref(0);
   
-  const gainSixtyHz = ref(0);
-  
+  const gains = ref(['0', '0', '0', '0', '0', '0']);
   const store = useStore();
 
   const getShowEqualizer = () => {
@@ -77,8 +151,8 @@
     store.commit('refreshBalance', parseFloat(newBalance));
   };
   
-  const updateGainSixtyHz = (newGain: string): void => {
-    store.commit('refreshGainSixtyHz', gainSixtyHz);
+  const updateGains = (index: number): void => {
+    store.commit('refreshGain', { 'newValue': parseFloat(gains.value[index]), 'index': index });
   };
 
   store.subscribe((mutation, state) => {

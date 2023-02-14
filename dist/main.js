@@ -18160,12 +18160,16 @@ exports["default"] = (0, vue_1.defineComponent)({
         const updateGains = (index) => {
             store.commit('refreshGain', { 'newValue': parseFloat(gains.value[index]), 'index': index });
         };
+        const x = () => {
+            gains.value[0] = '-5';
+            updateGains(0);
+        };
         store.subscribe((mutation, state) => {
             if (mutation.type === 'refreshShowEqualizer') {
                 hidden.value = getShowEqualizer();
             }
         });
-        const __returned__ = { hidden, volumeLevel, balance, gains, store, getShowEqualizer, updateVolume, updateBalance, updateGains };
+        const __returned__ = { hidden, volumeLevel, balance, gains, store, getShowEqualizer, updateVolume, updateBalance, updateGains, x };
         Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true });
         return __returned__;
     }
@@ -18571,18 +18575,7 @@ const _hoisted_3 = { class: "controls" };
 const _hoisted_4 = (0, vue_1.createElementVNode)("label", null, "Master volume", -1);
 const _hoisted_5 = { class: "controls" };
 const _hoisted_6 = (0, vue_1.createElementVNode)("label", null, "Balance", -1);
-const _hoisted_7 = { class: "controls" };
-const _hoisted_8 = (0, vue_1.createElementVNode)("label", null, "60Hz", -1);
-const _hoisted_9 = { class: "controls" };
-const _hoisted_10 = (0, vue_1.createElementVNode)("label", null, "170Hz", -1);
-const _hoisted_11 = { class: "controls" };
-const _hoisted_12 = (0, vue_1.createElementVNode)("label", null, "350Hz", -1);
-const _hoisted_13 = { class: "controls" };
-const _hoisted_14 = (0, vue_1.createElementVNode)("label", null, "1000Hz", -1);
-const _hoisted_15 = { class: "controls" };
-const _hoisted_16 = (0, vue_1.createElementVNode)("label", null, "3500Hz", -1);
-const _hoisted_17 = { class: "controls" };
-const _hoisted_18 = (0, vue_1.createElementVNode)("label", null, "10000Hz", -1);
+const _hoisted_7 = ["onUpdate:modelValue", "onInput"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
     return ((0, vue_1.openBlock)(), (0, vue_1.createElementBlock)("div", {
         class: (0, vue_1.normalizeClass)({ 'card-panel': true, 'hidden': !$setup.hidden })
@@ -18618,90 +18611,26 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                         ]),
                         (0, vue_1.createElementVNode)("output", null, (0, vue_1.toDisplayString)($setup.balance) + "     ", 1)
                     ]),
-                    (0, vue_1.createElementVNode)("div", _hoisted_7, [
-                        _hoisted_8,
-                        (0, vue_1.withDirectives)((0, vue_1.createElementVNode)("input", {
-                            type: "range",
-                            step: "1",
-                            min: "-30",
-                            max: "30",
-                            "onUpdate:modelValue": _cache[4] || (_cache[4] = ($event) => (($setup.gains[0]) = $event)),
-                            onInput: _cache[5] || (_cache[5] = ($event) => ($setup.updateGains(0)))
-                        }, null, 544), [
-                            [vue_1.vModelText, $setup.gains[0]]
-                        ]),
-                        (0, vue_1.createElementVNode)("output", null, (0, vue_1.toDisplayString)($setup.gains[0]) + " dB ", 1)
-                    ]),
-                    (0, vue_1.createElementVNode)("div", _hoisted_9, [
-                        _hoisted_10,
-                        (0, vue_1.withDirectives)((0, vue_1.createElementVNode)("input", {
-                            type: "range",
-                            step: "1",
-                            min: "-30",
-                            max: "30",
-                            "onUpdate:modelValue": _cache[6] || (_cache[6] = ($event) => (($setup.gains[1]) = $event)),
-                            onInput: _cache[7] || (_cache[7] = ($event) => ($setup.updateGains(1)))
-                        }, null, 544), [
-                            [vue_1.vModelText, $setup.gains[1]]
-                        ]),
-                        (0, vue_1.createElementVNode)("output", null, (0, vue_1.toDisplayString)($setup.gains[1]) + " dB ", 1)
-                    ]),
-                    (0, vue_1.createElementVNode)("div", _hoisted_11, [
-                        _hoisted_12,
-                        (0, vue_1.withDirectives)((0, vue_1.createElementVNode)("input", {
-                            type: "range",
-                            step: "1",
-                            min: "-30",
-                            max: "30",
-                            "onUpdate:modelValue": _cache[8] || (_cache[8] = ($event) => (($setup.gains[2]) = $event)),
-                            onInput: _cache[9] || (_cache[9] = ($event) => ($setup.updateGains(2)))
-                        }, null, 544), [
-                            [vue_1.vModelText, $setup.gains[2]]
-                        ]),
-                        (0, vue_1.createElementVNode)("output", null, (0, vue_1.toDisplayString)($setup.gains[2]) + " dB ", 1)
-                    ]),
-                    (0, vue_1.createElementVNode)("div", _hoisted_13, [
-                        _hoisted_14,
-                        (0, vue_1.withDirectives)((0, vue_1.createElementVNode)("input", {
-                            type: "range",
-                            step: "1",
-                            min: "-30",
-                            max: "30",
-                            "onUpdate:modelValue": _cache[10] || (_cache[10] = ($event) => (($setup.gains[3]) = $event)),
-                            onInput: _cache[11] || (_cache[11] = ($event) => ($setup.updateGains(3)))
-                        }, null, 544), [
-                            [vue_1.vModelText, $setup.gains[3]]
-                        ]),
-                        (0, vue_1.createElementVNode)("output", null, (0, vue_1.toDisplayString)($setup.gains[3]) + " dB ", 1)
-                    ]),
-                    (0, vue_1.createElementVNode)("div", _hoisted_15, [
-                        _hoisted_16,
-                        (0, vue_1.withDirectives)((0, vue_1.createElementVNode)("input", {
-                            type: "range",
-                            step: "1",
-                            min: "-30",
-                            max: "30",
-                            "onUpdate:modelValue": _cache[12] || (_cache[12] = ($event) => (($setup.gains[4]) = $event)),
-                            onInput: _cache[13] || (_cache[13] = ($event) => ($setup.updateGains(4)))
-                        }, null, 544), [
-                            [vue_1.vModelText, $setup.gains[4]]
-                        ]),
-                        (0, vue_1.createElementVNode)("output", null, (0, vue_1.toDisplayString)($setup.gains[4]) + " dB ", 1)
-                    ]),
-                    (0, vue_1.createElementVNode)("div", _hoisted_17, [
-                        _hoisted_18,
-                        (0, vue_1.withDirectives)((0, vue_1.createElementVNode)("input", {
-                            type: "range",
-                            step: "1",
-                            min: "-30",
-                            max: "30",
-                            "onUpdate:modelValue": _cache[14] || (_cache[14] = ($event) => (($setup.gains[5]) = $event)),
-                            onInput: _cache[15] || (_cache[15] = ($event) => ($setup.updateGains(5)))
-                        }, null, 544), [
-                            [vue_1.vModelText, $setup.gains[5]]
-                        ]),
-                        (0, vue_1.createElementVNode)("output", null, (0, vue_1.toDisplayString)($setup.gains[5]) + " dB ", 1)
-                    ])
+                    ((0, vue_1.openBlock)(), (0, vue_1.createElementBlock)(vue_1.Fragment, null, (0, vue_1.renderList)([60, 170, 350, 1000, 3500, 10000], (item, index) => {
+                        return (0, vue_1.createElementVNode)("div", {
+                            key: index,
+                            class: "controls"
+                        }, [
+                            (0, vue_1.createElementVNode)("label", null, (0, vue_1.toDisplayString)(item) + "Hz", 1),
+                            (0, vue_1.withDirectives)((0, vue_1.createElementVNode)("input", {
+                                type: "range",
+                                step: "1",
+                                min: "-30",
+                                max: "30",
+                                "onUpdate:modelValue": ($event) => (($setup.gains[index]) = $event),
+                                onInput: ($event) => ($setup.updateGains(index))
+                            }, null, 40, _hoisted_7), [
+                                [vue_1.vModelText, $setup.gains[index]]
+                            ]),
+                            (0, vue_1.createElementVNode)("output", null, (0, vue_1.toDisplayString)($setup.gains[index]) + " dB ", 1)
+                        ]);
+                    }), 64)),
+                    (0, vue_1.createElementVNode)("button", { onClick: $setup.x }, "asd")
                 ])
             ])
         ])

@@ -33,93 +33,18 @@
             </output>
           </div>
           
-          <div class="controls">
-            <label>60Hz</label>
+          <div v-for="(item, index) in [60, 170, 350, 1000, 3500, 10000]" :key="index" class="controls">
+            <label>{{ item }}Hz</label>
             <input
               type="range"
               step="1"
               min="-30"
               max="30"
-              v-model="gains[0]"
-              @input="updateGains(0)"
+              v-model="gains[index]"
+              @input="updateGains(index)"
             />
             <output>
-              {{ gains[0] }} dB
-            </output>
-          </div>
-          
-          <div class="controls">
-            <label>170Hz</label>
-            <input
-              type="range"
-              step="1"
-              min="-30"
-              max="30"
-              v-model="gains[1]"
-              @input="updateGains(1)"
-            />
-            <output>
-              {{ gains[1] }} dB
-            </output>
-          </div>
-          
-          <div class="controls">
-            <label>350Hz</label>
-            <input
-              type="range"
-              step="1"
-              min="-30"
-              max="30"
-              v-model="gains[2]"
-              @input="updateGains(2)"
-            />
-            <output>
-              {{ gains[2] }} dB
-            </output>
-          </div>
-          
-          <div class="controls">
-            <label>1000Hz</label>
-            <input
-              type="range"
-              step="1"
-              min="-30"
-              max="30"
-              v-model="gains[3]"
-              @input="updateGains(3)"
-            />
-            <output>
-              {{ gains[3] }} dB
-            </output>
-          </div>
-          
-          <div class="controls">
-            <label>3500Hz</label>
-            <input
-              type="range"
-              step="1"
-              min="-30"
-              max="30"
-              v-model="gains[4]"
-              @input="updateGains(4)"
-            />
-            <output>
-              {{ gains[4] }} dB
-            </output>
-          </div>
-          
-          <div class="controls">
-            <label>10000Hz</label>
-            <input
-              type="range"
-              step="1"
-              min="-30"
-              max="30"
-              v-model="gains[5]"
-              @input="updateGains(5)"
-            />
-            <output>
-              {{ gains[5] }} dB
+              {{ gains[index] }} dB
             </output>
           </div>
         </form>

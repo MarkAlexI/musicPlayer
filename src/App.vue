@@ -1,5 +1,7 @@
 <template>
   <div class="container">
+    <PreLoader />
+    
     <MyHeader />
     <TracksInput />
     <TrackEqualizer />
@@ -11,6 +13,7 @@
 <script setup lang="ts">
   import M from 'materialize-css/dist/js/materialize.min.js';
   import { onMounted } from 'vue';
+  import PreLoader from '@/PreLoader';
   import MyHeader from '@/MyHeader';
   import TracksInput from '@/TracksInput';
   import TrackEqualizer from '@/TrackEqualizer.vue';

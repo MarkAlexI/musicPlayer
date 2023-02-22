@@ -17980,6 +17980,7 @@ const vue_1 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bu
 const vue_2 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 const vuex_1 = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm-bundler.js");
 const TrackVisualizer_vue_1 = __webpack_require__(/*! @/TrackVisualizer.vue */ "./src/components/TrackVisualizer.vue");
+const formatTime_1 = __webpack_require__(/*! ../utils/formatTime */ "./src/utils/formatTime.ts");
 exports["default"] = (0, vue_1.defineComponent)({
     __name: 'MusicPlayer',
     setup(__props, { expose }) {
@@ -18057,7 +18058,7 @@ exports["default"] = (0, vue_1.defineComponent)({
                 playNewTrack(currTrack.value);
             }
         });
-        const __returned__ = { store, getTrack, getTrackListLength, getCurrTrack, updateCurrTrack, player, currTime, duration, currTrack, isPlaying, trackName, pause, play, playNewTrack, changeTrack, TrackVisualizer: TrackVisualizer_vue_1.default };
+        const __returned__ = { store, getTrack, getTrackListLength, getCurrTrack, updateCurrTrack, player, currTime, duration, currTrack, isPlaying, trackName, pause, play, playNewTrack, changeTrack, TrackVisualizer: TrackVisualizer_vue_1.default, get formatTime() { return formatTime_1.default; } };
         Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true });
         return __returned__;
     }
@@ -18160,16 +18161,12 @@ exports["default"] = (0, vue_1.defineComponent)({
         const updateGains = (index) => {
             store.commit('refreshGain', { 'newValue': parseFloat(gains.value[index]), 'index': index });
         };
-        const x = () => {
-            gains.value[0] = '-5';
-            updateGains(0);
-        };
         store.subscribe((mutation, state) => {
             if (mutation.type === 'refreshShowEqualizer') {
                 hidden.value = getShowEqualizer();
             }
         });
-        const __returned__ = { hidden, volumeLevel, balance, gains, store, getShowEqualizer, updateVolume, updateBalance, updateGains, x };
+        const __returned__ = { hidden, volumeLevel, balance, gains, store, getShowEqualizer, updateVolume, updateBalance, updateGains };
         Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true });
         return __returned__;
     }
@@ -18456,7 +18453,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     return ((0, vue_1.openBlock)(), (0, vue_1.createElementBlock)("div", _hoisted_1, [
         (0, vue_1.createVNode)($setup["TrackVisualizer"]),
         (0, vue_1.createElementVNode)("div", _hoisted_2, [
-            (0, vue_1.createElementVNode)("p", _hoisted_3, (0, vue_1.toDisplayString)($setup.currTime + ' \/ ' + $setup.duration), 1),
+            (0, vue_1.createElementVNode)("p", _hoisted_3, (0, vue_1.toDisplayString)($setup.formatTime($setup.currTime) + ' \/ ' + $setup.formatTime($setup.duration)), 1),
             (0, vue_1.createElementVNode)("div", _hoisted_4, [
                 (0, vue_1.createElementVNode)("p", _hoisted_5, (0, vue_1.toDisplayString)($setup.trackName || 'Selected to play...'), 1)
             ])
@@ -18629,8 +18626,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                             ]),
                             (0, vue_1.createElementVNode)("output", null, (0, vue_1.toDisplayString)($setup.gains[index]) + " dB ", 1)
                         ]);
-                    }), 64)),
-                    (0, vue_1.createElementVNode)("button", { onClick: $setup.x }, "asd")
+                    }), 64))
                 ])
             ])
         ])
@@ -18739,6 +18735,28 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     ], 512));
 }
 exports.render = render;
+
+
+/***/ }),
+
+/***/ "./src/utils/formatTime.ts":
+/*!*********************************!*\
+  !*** ./src/utils/formatTime.ts ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const x = (t) => {
+    return `${t < 10 ? '0' : ''}${t}`;
+};
+const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${x(minutes)}:${x(seconds)}`;
+};
+exports["default"] = formatTime;
 
 
 /***/ }),

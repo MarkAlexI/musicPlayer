@@ -3,7 +3,9 @@
     <TrackVisualizer />
 
     <div class="duration-info">
-      <p class="deep-purple-text">{{ currTime + ' \/ ' + duration }}</p>
+      <p class="deep-purple-text">
+        {{ formatTime(currTime) + ' \/ ' + formatTime(duration) }}
+      </p>
 
       <div class="marquee">
         <p class="wave">{{ trackName || 'Selected to play...' }}</p>
@@ -29,6 +31,7 @@
   import { ref, onMounted } from 'vue';
   import { useStore } from 'vuex';
   import TrackVisualizer from '@/TrackVisualizer.vue';
+  import formatTime from '../utils/formatTime';
 
   const store = useStore();
 

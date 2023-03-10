@@ -138,9 +138,10 @@
 
   .marquee {
     overflow: hidden;
+    min-width: 100%;
     background-color: teal;
     color: whitesmoke;
-    margin: .75rem auto;
+    margin: 0 auto .75rem auto;
     padding: .3rem;
   }
 

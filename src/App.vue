@@ -35,17 +35,15 @@
     background-color: lightcyan;
   }
 
-/*  .container {
-    max-width: 860px;
-    padding-top: 1rem;
-    margin: 10px 20px;
-    background-color: dodgerblue;
-    min-height: 250px;
+  .container {
+    max-width: 780px;
+    padding-top: .3rem;
+    margin: 1rem 2 rem;
     
     @media (min-width: 480px) {
       & {
         margin: 0 auto;
       }
     }
-  }*/
+  }
 </style>

@@ -19,7 +19,19 @@
   import TrackEqualizer from '@/TrackEqualizer.vue';
   import MusicPlayer from '@/MusicPlayer';
   import TrackList from '@/TrackList';
-
+  
+  window.addEventListener('load', () => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('../sw.js')
+        .then(registration => {
+          console.log('Service worker successfully registered', registration);
+        })
+        .catch(error => {
+          console.log('Service worker registration failed', error);
+        });
+    }
+  });
+  
   onMounted(async () => {
     await (M || window.M).AutoInit();
   });

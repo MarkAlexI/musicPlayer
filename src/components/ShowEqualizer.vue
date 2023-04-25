@@ -20,10 +20,6 @@
 
   const store = useStore();
 
-  const getShowEqualizer = (): boolean => {
-    return store.getters.showEqualizer;
-  };
-
   const updateShowEqualizer = (): void => {
     store.commit('refreshShowEqualizer');
   };

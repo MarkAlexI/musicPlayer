@@ -16,11 +16,13 @@
 </template>
 
 <script setup lang="ts">
+  import { vibrate } from '../utils/vibrate';
   import { useStore } from 'vuex';
 
   const store = useStore();
 
   const updateShowEqualizer = (): void => {
+    vibrate();
     store.commit('refreshShowEqualizer');
   };
 </script>

@@ -15,6 +15,7 @@
   import { ref, onMounted } from 'vue';
   import { useStore } from 'vuex';
   import ShowEqualizer from '@/ShowEqualizer.vue';
+  import { vibrate } from '../utils/vibrate';
   
   const dropbox = ref(null);
   
@@ -43,6 +44,7 @@
   const store = useStore();
 
   const updateStore = (newTracks: Tracks): void => {
+    vibrate([300]);
     store.commit('refreshTrackList', newTracks);
     store.commit('refreshTrackListInfo');
     console.log(store.getters.trackListInfo);

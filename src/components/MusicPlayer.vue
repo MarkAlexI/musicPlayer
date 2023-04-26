@@ -32,6 +32,7 @@
   import { useStore } from 'vuex';
   import TrackVisualizer from '@/TrackVisualizer.vue';
   import formatTime from '../utils/formatTime';
+  import { vibrate } from '../utils/vibrate';
 
   const store = useStore();
 
@@ -70,13 +71,15 @@
     }
   });
 
-  const pause = () => !!player.src && (isPlaying.value = !isPlaying.value, player.pause());
-  const play = () => !!player.src && (isPlaying.value = !isPlaying.value, player.play());
+  const pause = () => !!player.src && (isPlaying.value = !isPlaying.value, vibrate(), player.pause());
+  const play = () => !!player.src && (isPlaying.value = !isPlaying.value, vibrate(), player.play());
 
   const playNewTrack = async (index: number) => {
+    vibrate();
+    
     const track = getTrack(index);
     if (!!!track) return;
-
+    
     trackName.value = track.name;
 
     if (!!player.src) {
@@ -99,6 +102,7 @@
   };
 
   const changeTrack = (direction: number): void => {
+    
     const trackListLength = getTrackListLength();
     if (trackListLength === 0) return;
     let nextTrack = currTrack.value + direction;
@@ -107,7 +111,7 @@
       nextTrack < 0 ?
       trackListLength - 1 :
       nextTrack;
-
+    vibrate();
     updateCurrTrack(nextTrack);
   };
 

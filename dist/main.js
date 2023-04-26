@@ -17992,6 +17992,7 @@ const vue_2 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bu
 const vuex_1 = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm-bundler.js");
 const TrackVisualizer_vue_1 = __webpack_require__(/*! @/TrackVisualizer.vue */ "./src/components/TrackVisualizer.vue");
 const formatTime_1 = __webpack_require__(/*! ../utils/formatTime */ "./src/utils/formatTime.ts");
+const vibrate_1 = __webpack_require__(/*! ../utils/vibrate */ "./src/utils/vibrate.ts");
 exports["default"] = (0, vue_1.defineComponent)({
     __name: 'MusicPlayer',
     setup(__props, { expose }) {
@@ -18025,9 +18026,10 @@ exports["default"] = (0, vue_1.defineComponent)({
                     0);
             }
         });
-        const pause = () => !!player.src && (isPlaying.value = !isPlaying.value, player.pause());
-        const play = () => !!player.src && (isPlaying.value = !isPlaying.value, player.play());
+        const pause = () => !!player.src && (isPlaying.value = !isPlaying.value, (0, vibrate_1.vibrate)(), player.pause());
+        const play = () => !!player.src && (isPlaying.value = !isPlaying.value, (0, vibrate_1.vibrate)(), player.play());
         const playNewTrack = (index) => __awaiter(this, void 0, void 0, function* () {
+            (0, vibrate_1.vibrate)();
             const track = getTrack(index);
             if (!!!track)
                 return;
@@ -18058,6 +18060,7 @@ exports["default"] = (0, vue_1.defineComponent)({
                 nextTrack < 0 ?
                     trackListLength - 1 :
                     nextTrack;
+            (0, vibrate_1.vibrate)();
             updateCurrTrack(nextTrack);
         };
         store.subscribe((mutation, state) => {
@@ -18150,6 +18153,7 @@ exports["default"] = (0, vue_1.defineComponent)({
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const vue_1 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+const vibrate_1 = __webpack_require__(/*! ../utils/vibrate */ "./src/utils/vibrate.ts");
 const vuex_1 = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm-bundler.js");
 exports["default"] = (0, vue_1.defineComponent)({
     __name: 'ShowEqualizer',
@@ -18157,6 +18161,7 @@ exports["default"] = (0, vue_1.defineComponent)({
         expose();
         const store = (0, vuex_1.useStore)();
         const updateShowEqualizer = () => {
+            (0, vibrate_1.vibrate)();
             store.commit('refreshShowEqualizer');
         };
         const __returned__ = { store, updateShowEqualizer };
@@ -18180,6 +18185,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const vue_1 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 const vue_2 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 const vuex_1 = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm-bundler.js");
+const vibrate_1 = __webpack_require__(/*! ../utils/vibrate */ "./src/utils/vibrate.ts");
 exports["default"] = (0, vue_1.defineComponent)({
     __name: 'TrackEqualizer',
     setup(__props, { expose }) {
@@ -18193,12 +18199,15 @@ exports["default"] = (0, vue_1.defineComponent)({
             return store.getters.showEqualizer;
         };
         const updateVolume = (newVolumeLevel) => {
+            (0, vibrate_1.vibrate)();
             store.commit('refreshVolume', parseFloat(newVolumeLevel));
         };
         const updateBalance = (newBalance) => {
+            (0, vibrate_1.vibrate)();
             store.commit('refreshBalance', parseFloat(newBalance));
         };
         const updateGains = (index) => {
+            (0, vibrate_1.vibrate)();
             store.commit('refreshGain', { 'newValue': parseFloat(gains.value[index]), 'index': index });
         };
         store.subscribe((mutation, state) => {
@@ -18227,6 +18236,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const vue_1 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 const vue_2 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 const vuex_1 = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm-bundler.js");
+const vibrate_1 = __webpack_require__(/*! ../utils/vibrate */ "./src/utils/vibrate.ts");
 exports["default"] = (0, vue_1.defineComponent)({
     __name: 'TrackList',
     setup(__props, { expose }) {
@@ -18241,6 +18251,7 @@ exports["default"] = (0, vue_1.defineComponent)({
         };
         store.subscribe((mutation, state) => {
             if (mutation.type === 'refreshTrackListInfo') {
+                (0, vibrate_1.vibrate)([100, 100, 100]);
                 trackList.value = store.getters.trackListInfo;
             }
         });
@@ -18387,6 +18398,7 @@ const vue_1 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bu
 const vue_2 = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 const vuex_1 = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm-bundler.js");
 const ShowEqualizer_vue_1 = __webpack_require__(/*! @/ShowEqualizer.vue */ "./src/components/ShowEqualizer.vue");
+const vibrate_1 = __webpack_require__(/*! ../utils/vibrate */ "./src/utils/vibrate.ts");
 exports["default"] = (0, vue_1.defineComponent)({
     __name: 'TracksInput',
     setup(__props, { expose }) {
@@ -18410,6 +18422,7 @@ exports["default"] = (0, vue_1.defineComponent)({
         }
         const store = (0, vuex_1.useStore)();
         const updateStore = (newTracks) => {
+            (0, vibrate_1.vibrate)([300]);
             store.commit('refreshTrackList', newTracks);
             store.commit('refreshTrackListInfo');
             console.log(store.getters.trackListInfo);
@@ -18816,6 +18829,22 @@ const formatTime = (time) => {
     return `${addZero(minutes)}:${addZero(seconds)}`;
 };
 exports["default"] = formatTime;
+
+
+/***/ }),
+
+/***/ "./src/utils/vibrate.ts":
+/*!******************************!*\
+  !*** ./src/utils/vibrate.ts ***!
+  \******************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.vibrate = void 0;
+const vibrate = (x = [200]) => navigator.vibrate(x);
+exports.vibrate = vibrate;
 
 
 /***/ }),

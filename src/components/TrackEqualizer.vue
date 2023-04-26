@@ -56,6 +56,7 @@
 <script setup lang="ts">
   import { ref } from 'vue';
   import { useStore } from 'vuex';
+  import { vibrate } from '../utils/vibrate';
 
   const hidden = ref(false);
   const volumeLevel = ref(10);
@@ -69,14 +70,17 @@
   };
   
   const updateVolume = (newVolumeLevel: string): void => {
+    vibrate();
     store.commit('refreshVolume', parseFloat(newVolumeLevel));
   }
   
   const updateBalance = (newBalance: string): void => {
+    vibrate();
     store.commit('refreshBalance', parseFloat(newBalance));
   };
   
   const updateGains = (index: number): void => {
+    vibrate();
     store.commit('refreshGain', { 'newValue': parseFloat(gains.value[index]), 'index': index });
   };
 

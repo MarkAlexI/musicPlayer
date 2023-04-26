@@ -1,0 +1,1 @@
+export const vibrate = (x: Array<number> = [200]): void => navigator.vibrate(x);

@@ -18,6 +18,7 @@
 <script setup lang="ts">
   import { ref } from 'vue';
   import { useStore } from 'vuex';
+  import { vibrate } from '../utils/vibrate';
   
   const store = useStore();
   
@@ -34,6 +35,7 @@
   
   store.subscribe((mutation, state) => {
     if (mutation.type === 'refreshTrackListInfo') {
+      vibrate([100, 100, 100]);
       trackList.value = store.getters.trackListInfo;
     }
   });

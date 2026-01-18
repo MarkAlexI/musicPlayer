@@ -28,7 +28,7 @@
   "dependencies": {
     "@types/node": "^18.11.9",
     "material-design-icons": "^3.0.1",
-    "materialize-css": "^1.0.0-rc.2",
+    "materialize-css": "^1.0.0",
     "vue": "^3.2.45",
     "vuex": "4.1.0"
   },
